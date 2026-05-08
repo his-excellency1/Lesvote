@@ -1,0 +1,26 @@
+{
+  "name": "lesvote",
+  "version": "1.0.0",
+  "description": "Online voting platform for awards and nominations",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "voting",
+    "awards",
+    "voting-platform"
+  ],
+  "author": "LESVOTE Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.7.0",
+    "mongoose": "^7.8.9",
+    "multer": "^2.1.1"
+  }
+}

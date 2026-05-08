@@ -1,0 +1,2835 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LESVOTE</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+[data-theme="dark"]{
+  --bg:#0A0A0F;--surface:#13131E;--surface2:#1A1A2B;--surface3:#22223A;
+  --text:#F0EDE4;--text2:#B8B4AC;--muted:#8A8AA0;
+  --border:rgba(201,168,76,.14);--border2:rgba(240,237,228,.1);
+  --nav-bg:rgba(10,10,15,.92);--card:#13131E;
+  --inp-bg:#1A1A2B;--inp-border:rgba(240,237,228,.12);
+  --prog-bg:rgba(240,237,228,.08);--grid:rgba(201,168,76,.04);
+  --shadow:0 8px 32px rgba(0,0,0,.5);
+}
+[data-theme="light"]{
+  --bg:#F5F2EC;--surface:#FFFFFF;--surface2:#EDE9E0;--surface3:#E2DDD3;
+  --text:#1A1410;--text2:#4A4030;--muted:#7A7060;
+  --border:rgba(160,120,48,.18);--border2:rgba(30,20,10,.12);
+  --nav-bg:rgba(245,242,236,.95);--card:#FFFFFF;
+  --inp-bg:#F5F2EC;--inp-border:rgba(30,20,10,.14);
+  --prog-bg:rgba(30,20,10,.08);--grid:rgba(160,120,48,.06);
+  --shadow:0 8px 32px rgba(0,0,0,.1);
+}
+:root{--gold:#C9A84C;--gold-l:#E8C96A;--green:#16a34a;--red:#dc2626;--blue:#2563eb;--mtn:#d4a800;--telecel:#b90505;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
+.hidden{display:none!important}
+.btn{padding:.72rem 1.4rem;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;font-size:.86rem;letter-spacing:.06em;text-transform:uppercase;transition:all .22s}
+.btn-gold{background:var(--gold);color:#0A0A0F}.btn-gold:hover{background:var(--gold-l);transform:translateY(-1px)}.btn-gold:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border2)}.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{opacity:.85}
+.badge{display:inline-block;padding:.2rem .6rem;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;border-radius:2px}
+.badge-gold{background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3)}
+.badge-green{background:rgba(22,163,74,.12);color:var(--green);border:1px solid rgba(22,163,74,.28)}
+.badge-red{background:rgba(220,38,38,.12);color:var(--red);border:1px solid rgba(220,38,38,.28)}
+.badge-blue{background:rgba(37,99,235,.12);color:var(--blue);border:1px solid rgba(37,99,235,.28)}
+.card{background:var(--card);border:1px solid var(--border);padding:1.5rem}
+input,select,textarea{width:100%;padding:.78rem 1rem;background:var(--inp-bg);border:1px solid var(--inp-border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.92rem;outline:none;transition:border .22s,background .3s}
+input:focus,select:focus{border-color:var(--gold)}
+select option{background:var(--surface2);color:var(--text)}
+label{display:block;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.38rem}
+.form-group{margin-bottom:.95rem}
+.divider{height:1px;background:var(--border);margin:1.2rem 0}
+
+/* NAV */
+#topnav{position:fixed;top:0;left:0;width:100%;z-index:300;padding:.82rem 1.75rem;display:flex;align-items:center;justify-content:space-between;background:var(--nav-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Playfair Display',serif;font-size:.98rem;color:var(--gold);letter-spacing:.06em;cursor:pointer;flex-shrink:0}
+.nav-center{display:flex;gap:2rem;align-items:center;margin:0 auto;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase}
+.nav-link{color:var(--muted);cursor:pointer;transition:all .22s;padding:.5rem .8rem;border:1px solid transparent}
+.nav-link:hover{color:var(--gold);border-color:var(--gold)}
+.nav-link.active{color:var(--gold);border-bottom-color:var(--gold)}
+.nav-right{display:flex;gap:.55rem;align-items:center}
+.theme-btn{width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:all .22s;color:var(--text);flex-shrink:0}
+.theme-btn:hover{border-color:var(--gold)}
+.nav-action{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:none;border:1px solid var(--border2);padding:.38rem .88rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .22s}
+.nav-action:hover{border-color:var(--gold);color:var(--gold)}
+.nav-action.admin-active{border-color:var(--red);color:var(--red)}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(5px);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal{background:var(--surface);border:1px solid var(--border);padding:2.2rem;width:100%;max-width:390px;position:relative;box-shadow:var(--shadow)}
+.modal-close{position:absolute;top:.9rem;right:.9rem;background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;transition:color .2s}.modal-close:hover{color:var(--red)}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:700;margin-bottom:.28rem}
+.modal-sub{color:var(--muted);font-size:.86rem;margin-bottom:1.4rem}
+
+/* HOME PAGE */
+#homePage{padding-top:60px;min-height:100vh;display:flex;flex-direction:column}
+.home-hero{min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3rem 1.5rem;position:relative;overflow:hidden}
+.home-hero .grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:55px 55px;pointer-events:none}
+.home-hero .glow{position:absolute;inset:0;background:radial-gradient(ellipse 70% 45% at 50% 5%,rgba(201,168,76,.06) 0%,transparent 65%);pointer-events:none}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;line-height:1.1;margin-bottom:.6rem;position:relative;z-index:1}
+.hero-subtitle{color:var(--muted);font-size:1rem;margin-bottom:2rem;position:relative;z-index:1;max-width:600px}
+.search-box{width:100%;max-width:500px;display:flex;gap:.5rem;margin-bottom:2rem;position:relative;z-index:1}
+.search-box input{flex:1;padding:.9rem 1.2rem;font-size:.92rem;border-radius:4px}
+.search-box button{padding:.9rem 1.8rem;background:var(--gold);color:#0A0A0F;border:none;cursor:pointer;font-weight:700;font-size:.85rem;border-radius:4px;transition:all .22s;font-family:'DM Sans',sans-serif}
+.search-box button:hover{background:var(--gold-l);transform:translateY(-1px)}
+.events-section{flex:1;padding:2rem 1.5rem;background:var(--bg)}
+.events-section h2{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;margin-bottom:2rem;text-align:center}
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;max-width:1200px;margin:0 auto;text-align:left}
+.event-card{background:var(--card);border:1px solid var(--border);padding:1.6rem;cursor:pointer;transition:all .28s;border-radius:4px}
+.event-card:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 12px 32px rgba(201,168,76,.12)}
+.event-title{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;margin-bottom:.5rem;color:var(--text)}
+.event-code{display:inline-block;background:rgba(201,168,76,.1);color:var(--gold);padding:.4rem .8rem;font-size:.7rem;letter-spacing:.1em;margin-bottom:1rem;border-radius:2px;font-weight:600}
+.event-desc{color:var(--muted);font-size:.88rem;line-height:1.6;margin-bottom:1rem}
+.event-meta{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);padding-top:1rem;border-top:1px solid var(--border)}
+.empty-events{text-align:center;padding:3rem;color:var(--muted)}
+
+/* VOTER */
+#voterApp{padding-top:60px;display:none}
+#hubPage{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3rem 1.5rem;position:relative;overflow:hidden}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:55px 55px;pointer-events:none}
+.glow{position:absolute;inset:0;background:radial-gradient(ellipse 70% 45% at 50% 5%,rgba(74,74,255,.06) 0%,transparent 65%);pointer-events:none}
+.eyebrow{font-size:.7rem;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:1.1rem;position:relative;z-index:1;animation:fadeUp .7s ease both}
+.land-h1{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,6vw,4.4rem);font-weight:900;line-height:1;margin-bottom:.45rem;position:relative;z-index:1;animation:fadeUp .7s .1s ease both}
+.land-h1 em{color:var(--gold);font-style:italic;display:block}
+.land-p{color:var(--muted);font-size:1rem;margin-bottom:2.4rem;position:relative;z-index:1;animation:fadeUp .7s .2s ease both}
+
+/* PROGRAMME CARDS (hub) */
+.prog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.15rem;max-width:900px;width:100%;position:relative;z-index:1;animation:fadeUp .7s .3s ease both;text-align:left}
+.prog-card{background:var(--card);border:1px solid var(--border);padding:1.55rem 1.7rem;cursor:pointer;transition:all .28s;position:relative;overflow:hidden;background-size:cover;background-position:center;background-repeat:no-repeat}
+.prog-card.prog-cover{color:#fff}
+.prog-card.prog-cover .prog-meta span{color:rgba(255,255,255,.9)}
+.prog-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--gold);opacity:0;transition:opacity .22s}
+.prog-card:hover{border-color:rgba(201,168,76,.45);transform:translateY(-3px);box-shadow:0 10px 28px rgba(201,168,76,.08)}
+.prog-card:hover::before{opacity:1}
+.prog-card.closed .prog-status{background:rgba(220,38,38,.12);color:var(--red);border-color:rgba(220,38,38,.28)}
+.prog-icon{font-size:2.2rem;margin-bottom:.8rem}
+.prog-name{font-family:'Playfair Display',serif;font-size:1.18rem;font-weight:700;color:var(--text);margin-bottom:.28rem}
+.prog-desc{font-size:.8rem;color:var(--muted);line-height:1.5;margin-bottom:.85rem}
+.prog-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem}
+.prog-status{display:inline-block;padding:.18rem .55rem;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;border-radius:2px;background:rgba(22,163,74,.12);color:var(--green);border:1px solid rgba(22,163,74,.28)}
+.prog-cats{font-size:.72rem;color:var(--muted)}
+
+/* landing page (per programme) */
+#landingPage{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3rem 1.5rem;position:relative;overflow:hidden;background-size:cover;background-position:center;background-repeat:no-repeat}
+.chips{display:flex;flex-wrap:wrap;gap:.55rem;justify-content:center;margin-bottom:2.4rem;position:relative;z-index:1;animation:fadeUp .7s .3s ease both}
+.chip{padding:.38rem 1rem;border:1px solid var(--border);font-size:.78rem;color:var(--muted);cursor:pointer;transition:all .22s;background:var(--card)}
+.chip:hover{border-color:var(--gold);color:var(--gold)}
+.vote-btn-big{padding:.95rem 3rem;background:var(--gold);color:#0A0A0F;font-weight:700;font-size:.98rem;border:none;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;font-family:'DM Sans',sans-serif;transition:all .28s;position:relative;z-index:1;animation:fadeUp .7s .4s ease both}
+.vote-btn-big:hover{background:var(--gold-l);transform:translateY(-2px)}
+.page-wrap{max-width:980px;margin:0 auto;padding:2rem 1.5rem}
+.page-h{margin-bottom:1.8rem}
+.page-h h2{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700}
+.page-h p{color:var(--muted);font-size:.88rem;margin-top:.28rem}
+.back{margin-bottom:1.4rem}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:1rem}
+.cat-card{background:var(--card);border:1px solid var(--border);padding:1.4rem;cursor:pointer;transition:all .28s}
+.cat-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 8px 24px rgba(201,168,76,.09)}
+.ci{font-size:1.9rem;margin-bottom:.7rem}
+.cn{font-family:'Playfair Display',serif;font-size:1.02rem;font-weight:700;color:var(--text)}
+.cc{font-size:.76rem;color:var(--muted);margin-top:.22rem}
+.nom-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.9rem}
+.nom-card{background:var(--card);border:2px solid var(--border);cursor:pointer;transition:all .26s;position:relative;overflow:hidden}
+.nom-card:hover{border-color:rgba(201,168,76,.45);transform:translateY(-2px)}
+.nom-card.sel{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.nom-card img{width:100%;height:150px;object-fit:cover;display:block}
+.nom-av{width:100%;height:150px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:900;color:var(--gold);background:var(--surface2)}
+.nom-info{padding:.8rem}
+.nom-name{font-weight:500;font-size:.9rem;color:var(--text)}
+.nom-votes{font-size:.72rem;color:var(--muted);margin-top:.18rem}
+.sel-tick{position:absolute;top:.45rem;right:.45rem;width:21px;height:21px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.68rem;color:#0A0A0F;opacity:0;transition:opacity .22s}
+.nom-card.sel .sel-tick{opacity:1}
+.sum-card{background:var(--surface2);border:1px solid var(--border);padding:1.2rem;margin-bottom:1.4rem;display:flex;align-items:center;gap:1rem}
+.sum-av{width:54px;height:54px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--gold);flex-shrink:0;overflow:hidden}
+.sum-av img{width:100%;height:100%;object-fit:cover}
+.cost-row{background:var(--surface2);border:1px solid var(--border);padding:1rem 1.25rem;margin:1rem 0;display:flex;justify-content:space-between;align-items:center}
+.cost-lbl{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+.cost-val{font-family:'Playfair Display',serif;font-size:1.85rem;font-weight:700;color:var(--gold)}
+.pay-methods{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin:1rem 0}
+.pay-m{border:2px solid var(--border2);padding:.95rem;cursor:pointer;transition:all .22s;text-align:center;background:var(--card)}
+.pay-m:hover{border-color:rgba(201,168,76,.38)}
+.pay-m.act{border-color:var(--gold);background:rgba(201,168,76,.05)}
+.pm-name{font-weight:700;font-size:.92rem;margin-bottom:.22rem}
+.pm-sub{font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.mtn-c{color:var(--mtn)}.tel-c{color:var(--telecel)}
+.conf-icon{width:74px;height:74px;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:2.1rem;margin:0 auto 1.2rem;background:rgba(22,163,74,.1)}
+.conf-title{font-family:'Playfair Display',serif;font-size:1.85rem;font-weight:700;margin-bottom:.38rem}
+.conf-box{background:var(--surface2);border:1px solid var(--border);padding:1.35rem;margin:1.35rem 0;text-align:left}
+.conf-row{display:flex;justify-content:space-between;padding:.52rem 0;border-bottom:1px solid var(--border);font-size:.86rem}
+.conf-row:last-child{border-bottom:none}
+.conf-row span:first-child{color:var(--muted)}
+.conf-row span:last-child{font-weight:500;color:var(--gold)}
+.lead-row{display:flex;align-items:center;gap:.88rem;padding:.88rem 1rem;background:var(--card);border:1px solid var(--border);margin-bottom:.48rem;transition:border .22s}
+.lead-row:hover{border-color:rgba(201,168,76,.35)}
+.lead-rank{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:var(--gold);width:2rem;text-align:center;flex-shrink:0}
+.lead-init{width:38px;height:38px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:.95rem;color:var(--gold);flex-shrink:0}
+.lead-info{flex:1;min-width:0}
+.lead-name{font-weight:500;font-size:.88rem;color:var(--text)}
+.lead-cat{font-size:.72rem;color:var(--muted)}
+.lead-bar{width:105px}
+.bar-bg{height:5px;background:var(--prog-bg);border-radius:3px}
+.bar-fill{height:5px;background:var(--gold);border-radius:3px}
+.lead-v{font-size:.74rem;color:var(--gold);font-weight:500;text-align:right;margin-top:.18rem}
+
+/* FOOTER */
+footer{background:var(--surface);border-top:1px solid var(--border);padding:2rem 1.5rem;margin-top:auto}
+.footer-content{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.footer-section h3{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;margin-bottom:1rem;color:var(--text)}
+.footer-section ul{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+.footer-section a{color:var(--muted);font-size:.84rem;text-decoration:none;transition:color .22s;cursor:pointer}
+.footer-section a:hover{color:var(--gold)}
+.footer-social{display:flex;gap:1rem;margin-top:1rem}
+.social-icon{width:32px;height:32px;border-radius:50%;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;color:var(--gold);cursor:pointer;transition:all .22s;font-size:.9rem}
+.social-icon:hover{background:rgba(201,168,76,.2);transform:translateY(-2px)}
+.footer-bottom{text-align:center;padding-top:1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem}
+
+/* CONTENT PAGES */
+.content-page{display:none;padding-top:60px;min-height:100vh}
+.content-page.active{display:block}
+.page-container{max-width:900px;margin:0 auto;padding:3rem 1.5rem}
+.page-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;margin-bottom:2rem}
+.page-content{color:var(--muted);line-height:1.8;font-size:.92rem}
+.page-content p{margin-bottom:1.5rem}
+.page-content h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--text);margin:2rem 0 1rem}
+
+/* ADMIN */
+#adminApp{padding-top:60px;display:flex;min-height:100vh;flex-wrap:wrap}
+#adminSidebar{width:212px;background:var(--surface);border-right:1px solid var(--border);flex-shrink:0;position:fixed;top:60px;bottom:0;overflow-y:auto;display:flex;flex-direction:column;overflow-x:hidden}
+.sb-sec{padding:.4rem 1.15rem;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-top:.85rem}
+.sb-lnk{display:block;padding:.62rem 1.35rem;font-size:.84rem;color:var(--muted);cursor:pointer;transition:all .18s;border-left:2px solid transparent;min-height:44px;display:flex;align-items:center}
+.sb-lnk:hover{color:var(--text);background:rgba(201,168,76,.04)}
+.sb-lnk:focus-visible{outline:2px solid rgba(201,168,76,.75);outline-offset:-2px}
+.sb-lnk.active{color:var(--gold);border-left-color:var(--gold);background:rgba(201,168,76,.06)}
+.sb-foot{padding:1rem 1.35rem;border-top:1px solid var(--border);margin-top:auto;display:flex;align-items:center;gap:.55rem}
+.sb-av{width:30px;height:30px;border-radius:50%;background:rgba(201,168,76,.15);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--gold);flex-shrink:0}
+.sb-uname{font-size:.8rem;font-weight:500;color:var(--text)}
+.sb-role{font-size:.66rem;color:var(--muted)}
+.sb-out{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--muted);font-size:.88rem;transition:color .2s}.sb-out:hover{color:var(--red)}
+#adminContent{margin-left:212px;flex:1;padding:2rem;min-width:0}
+.adm-page{display:none}.adm-page.active{display:block}
+.adm-title{font-family:'Playfair Display',serif;font-size:1.45rem;font-weight:700;margin-bottom:1.4rem;color:var(--text)}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.9rem;margin-bottom:1.8rem}
+.s-card{background:var(--card);border:1px solid var(--border);padding:1.15rem}
+.s-lbl{font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.32rem}
+.s-val{font-family:'Playfair Display',serif;font-size:1.85rem;font-weight:700;color:var(--gold)}
+.s-sub{font-size:.72rem;color:var(--muted);margin-top:.14rem}
+.tbl-wrap{overflow-x:auto}
+.adm-tbl{width:100%;border-collapse:collapse;font-size:.84rem}
+.adm-tbl th{text-align:left;padding:.72rem 1rem;font-size:.64rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+.adm-tbl td{padding:.72rem 1rem;border-bottom:1px solid var(--border);color:var(--text)}
+.adm-tbl tr:hover td{background:rgba(201,168,76,.03)}
+.pbar{height:5px;background:var(--prog-bg);border-radius:3px;overflow:hidden;min-width:68px}
+.pbar-fill{height:100%;background:var(--gold);border-radius:3px}
+.toggle{width:44px;height:24px;background:var(--prog-bg);border-radius:12px;position:relative;cursor:pointer;transition:background .28s;flex-shrink:0;border:1px solid var(--border2)}
+.toggle.on{background:var(--green);border-color:var(--green)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:left .24s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.toggle.on::after{left:22px}
+.blk-chip{display:inline-flex;align-items:center;gap:.38rem;padding:.26rem .62rem;background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.24);font-size:.74rem;margin:.18rem;color:var(--red)}
+.a2col{display:grid;grid-template-columns:1fr 1fr;gap:.95rem}
+.ctrl-row{display:flex;align-items:center;justify-content:space-between;padding:.88rem 1rem;background:var(--surface2);border:1px solid var(--border);margin-bottom:.62rem}
+.pulse-circle{width:62px;height:62px;border-radius:50%;background:rgba(201,168,76,.14);border:2px solid var(--gold);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:1.7rem;animation:pulse 1.6s ease infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.07);opacity:.72}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes confPulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.8}100%{transform:scale(1);opacity:1}}
+@keyframes slideInError{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .62s linear infinite;display:inline-block;vertical-align:middle;margin-right:.4rem}
+.inline-error{display:inline-block;padding:.6rem .8rem;background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.28);color:var(--red);font-size:.78rem;border-radius:3px;margin-bottom:.8rem;animation:slideInError .22s ease;margin-top:-.6rem}
+
+/* Programme switcher in admin */
+.prog-switcher{background:var(--surface2);border:1px solid var(--border);padding:.85rem 1rem;margin-bottom:1.6rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.prog-switcher label{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap;margin:0}
+#adminProgSel{flex:1;min-width:140px;max-width:260px;padding:.5rem .8rem;font-size:.84rem}
+.prog-pill{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .65rem;font-size:.72rem;border-radius:20px;border:1px solid var(--border);color:var(--muted);background:var(--card);margin:.18rem;cursor:pointer;transition:all .18s}
+.prog-pill:hover,.prog-pill.act{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.07)}
+
+/* Programmes management page */
+.prog-mgmt-card{background:var(--card);border:1px solid var(--border);padding:1.1rem 1.3rem;margin-bottom:.75rem;display:flex;align-items:center;gap:1rem}
+.prog-mgmt-icon{font-size:1.55rem;flex-shrink:0}
+.prog-mgmt-info{flex:1;min-width:0}
+.prog-mgmt-name{font-weight:500;font-size:.92rem;color:var(--text)}
+.prog-mgmt-meta{font-size:.72rem;color:var(--muted);margin-top:.15rem}
+.prog-mgmt-actions{display:flex;gap:.45rem;flex-shrink:0}
+
+/* MOBILE RESPONSIVE */
+@media(max-width:768px){
+  /* NAV */
+  #topnav{padding:.6rem 1rem;flex-wrap:wrap;gap:.5rem}
+  .nav-logo{font-size:.85rem}
+  .nav-center{gap:.8rem;margin:0}
+  .nav-link{padding:.3rem .5rem;font-size:.65rem}
+  .nav-right{gap:.35rem}
+  .theme-btn{width:32px;height:32px;font-size:.85rem}
+  .nav-action{font-size:.62rem;padding:.3rem .7rem}
+  
+  /* LAYOUT */
+  #voterApp{padding-top:54px}
+  #hubPage,#landingPage{padding:2rem 1.2rem}
+  .page-wrap{padding:1.5rem 1.2rem!important}
+  
+  /* TYPOGRAPHY */
+  .land-h1{font-size:clamp(1.8rem,5vw,3.2rem)}
+  .land-p{font-size:.92rem;margin-bottom:1.8rem}
+  .eyebrow{font-size:.65rem;margin-bottom:.85rem}
+  
+  /* GRIDS */
+  .prog-grid{grid-template-columns:1fr;max-width:100%}
+  .cat-grid{grid-template-columns:repeat(2,1fr);gap:.8rem}
+  .nom-grid{grid-template-columns:repeat(2,1fr);gap:.7rem}
+  .nom-card img,.nom-av{height:120px}
+  .nom-info{padding:.6rem}
+  .nom-name{font-size:.82rem}
+  .nom-votes{font-size:.68rem}
+  
+  /* CARDS */
+  .card,.prog-card,.cat-card{padding:1.2rem}
+  .prog-card{padding:1.2rem 1.4rem}
+  
+  /* BUTTONS */
+  .btn{padding:.6rem 1.2rem;font-size:.78rem}
+  .vote-btn-big{padding:.8rem 2rem;font-size:.88rem}
+  .back{margin-bottom:1.2rem}
+  
+  /* FORMS */
+  .form-group{margin-bottom:.75rem}
+  label{font-size:.65rem;margin-bottom:.25rem}
+  input,select,textarea{padding:.65rem .85rem;font-size:.86rem}
+  
+  /* MODALS */
+  .modal{max-width:95%;max-width:min(90vw,360px);padding:1.6rem}
+  .modal-title{font-size:1.35rem;margin-bottom:.2rem}
+  .modal-sub{font-size:.8rem;margin-bottom:1rem}
+  .overlay{padding:.8rem}
+  
+  /* STATS & ROWS */
+  .stats-row{grid-template-columns:repeat(2,1fr);gap:.7rem}
+  .s-card{padding:.9rem}
+  .s-lbl{font-size:.6rem}
+  .s-val{font-size:1.55rem}
+  .cost-row{padding:.8rem 1rem;margin:.8rem 0}
+  .cost-val{font-size:1.55rem}
+  
+  /* PAYMENT */
+  .pay-methods{grid-template-columns:1fr;gap:.7rem}
+  .pay-m{padding:.8rem}
+  .pm-name{font-size:.85rem}
+  .pm-sub{font-size:.6rem}
+  
+  /* SUMMARY CARDS */
+  .sum-card{padding:.95rem;gap:.8rem}
+  .sum-av{width:48px;height:48px;font-size:1.2rem}
+  .sum-name{font-size:.9rem}
+  .sum-cat{font-size:.7rem}
+  
+  /* CHIPS */
+  .chips{gap:.4rem;margin-bottom:1.8rem}
+  .chip{padding:.3rem .8rem;font-size:.72rem}
+  
+  /* CONFIRMATION */
+  .conf-icon{width:64px;height:64px;font-size:1.8rem;margin:0 auto 1rem}
+  .conf-title{font-size:1.55rem;margin-bottom:.3rem}
+  .conf-box{padding:1rem;margin:1rem 0}
+  .conf-row{padding:.4rem 0;font-size:.8rem}
+  
+  /* LEADERBOARD */
+  .lead-row{padding:.7rem .8rem;gap:.6rem;margin-bottom:.4rem}
+  .lead-rank{font-size:1.1rem;width:1.8rem}
+  .lead-init{width:34px;height:34px;font-size:.85rem}
+  .lead-name{font-size:.82rem}
+  .lead-cat{font-size:.68rem}
+  .lead-bar{width:80px}
+  .lead-v{font-size:.68rem}
+  
+  /* ADMIN */
+  #adminApp{flex-direction:column}
+  #adminSidebar{width:100%;position:static;border-right:none;border-bottom:1px solid var(--border);flex-direction:row;flex-wrap:wrap;padding:.5rem;gap:.3rem;justify-content:flex-start;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;overflow-y:visible;max-height:none}
+  #adminContent{margin-left:0;padding:1.2rem 1rem}
+  .sb-sec{display:none}
+  .sb-foot{display:flex;padding:.3rem .8rem;border-top:none;border-left:1px solid var(--border);margin-top:0;margin-left:auto;gap:.4rem}
+  .sb-av{width:28px;height:28px;font-size:.7rem}
+  .sb-uname{font-size:.7rem}
+  .sb-role{font-size:.6rem}
+  .sb-lnk{padding:.5rem .9rem;border-left:none;border-bottom:3px solid transparent;font-size:.72rem;white-space:nowrap;flex-shrink:0;min-height:auto}
+  .sb-lnk:hover{background:transparent;border-bottom-color:rgba(201,168,76,.3)}
+  .sb-lnk.active{border-bottom-color:var(--gold);background:transparent}
+  .adm-page{padding:0}
+  .adm-title{font-size:1.15rem;margin-bottom:1.2rem}
+  .prog-switcher{flex-wrap:wrap;gap:.6rem;padding:.7rem 1rem}
+  .prog-switcher label{font-size:.65rem}
+  #adminProgSel{max-width:100%}
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:1rem;overflow-y:visible}
+  .adm-tbl{font-size:.65rem;width:100%;min-width:320px;table-layout:auto}
+  .adm-tbl th{padding:.4rem .35rem;font-size:.55rem;word-break:break-word}
+  .adm-tbl td{padding:.4rem .35rem;word-break:break-word}
+  .adm-tbl th:nth-child(2),.adm-tbl td:nth-child(2){display:none}
+  .adm-tbl th:nth-child(7),.adm-tbl td:nth-child(7){display:none}
+  .a2col{grid-template-columns:1fr}
+  
+  /* ADMIN GRIDS - FORCE SINGLE COLUMN */
+  [style*="display:grid"][style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+  [style*="display:grid"][style*="grid-template-columns:1fr 1.4fr"]{grid-template-columns:1fr!important}
+  [style*="display:grid"][style*="grid-template-columns:1fr 1.5fr"]{grid-template-columns:1fr!important}
+  [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+  [style*="grid-template-columns:1fr 1.4fr"]{grid-template-columns:1fr!important}
+  [style*="grid-template-columns:1fr 1.5fr"]{grid-template-columns:1fr!important}
+  
+  /* PROGRAMME MGMT */
+  .prog-mgmt-card{padding:.9rem 1rem;gap:.8rem;flex-direction:column;align-items:flex-start}
+  .prog-mgmt-icon{font-size:1.3rem}
+  .prog-mgmt-actions{flex-wrap:wrap;width:100%;gap:.35rem}
+  
+  /* FILE INPUTS */
+  #createProgCard input[type="file"],
+  #adminCategories input[type="file"]{width:100%;margin-bottom:.5rem}
+  .btn.btn-outline{white-space:normal}
+  
+  /* TOUCH TARGETS */
+  .btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+  .toggle{min-width:44px;min-height:44px}
+  .theme-btn{min-width:44px;min-height:44px}
+  
+  /* CARD LAYOUTS */
+  .card{margin-bottom:1rem}
+  
+  /* MISC */
+  .page-h h2{font-size:1.4rem}
+  .page-h p{font-size:.8rem}
+  .pulse-circle{width:56px;height:56px;font-size:1.5rem;margin:0 auto .9rem}
+}
+
+@media(max-width:480px){
+  /* EXTRA SMALL SCREENS */
+  #topnav{padding:.5rem .8rem}
+  .nav-logo{font-size:.75rem}
+  .nav-right{gap:.25rem}
+  .theme-btn{width:30px;height:30px;font-size:.75rem}
+  .nav-action{font-size:.58rem;padding:.25rem .6rem}
+  
+  #hubPage,#landingPage{padding:1.5rem .9rem}
+  .page-wrap{padding:1.2rem .9rem!important}
+  
+  .land-h1{font-size:clamp(1.4rem,4vw,2.6rem)}
+  .land-h1 em{display:block}
+  .land-p{font-size:.88rem;margin-bottom:1.4rem}
+  .eyebrow{font-size:.6rem;margin-bottom:.7rem}
+  
+  /* SINGLE COLUMN GRIDS */
+  .cat-grid{grid-template-columns:1fr;gap:.65rem}
+  .nom-grid{grid-template-columns:1fr;gap:.6rem}
+  .nom-card img,.nom-av{height:140px}
+  .nom-info{padding:.7rem}
+  .nom-name{font-size:.88rem}
+  
+  .stats-row{grid-template-columns:1fr;gap:.6rem}
+  .s-card{padding:.8rem}
+  .s-lbl{font-size:.58rem}
+  .s-val{font-size:1.35rem}
+  
+  .btn{padding:.55rem 1rem;font-size:.75rem}
+  .vote-btn-big{padding:.75rem 1.5rem;font-size:.82rem}
+  .back{margin-bottom:1rem}
+  
+  .modal{max-width:95%;max-width:min(95vw,320px);padding:1.4rem 1.2rem}
+  .modal-title{font-size:1.2rem}
+  .modal-sub{font-size:.75rem}
+  .modal-close{font-size:.95rem}
+  
+  .chip{padding:.25rem .7rem;font-size:.68rem}
+  .chips{gap:.35rem}
+  
+  .sum-card{flex-direction:column;align-items:center;text-align:center;padding:.8rem}
+  .sum-av{width:52px;height:52px;font-size:1.35rem}
+  
+  .cost-row{padding:.7rem;margin:.7rem 0;font-size:.8rem}
+  .cost-lbl{font-size:.65rem}
+  .cost-val{font-size:1.35rem}
+  
+  .pay-m{padding:.7rem;font-size:.8rem}
+  .pm-name{font-size:.8rem;margin-bottom:.15rem}
+  .pm-sub{font-size:.58rem}
+  
+  input,select,textarea{padding:.6rem .75rem;font-size:.82rem}
+  label{font-size:.62rem;margin-bottom:.2rem}
+  
+  .form-group{margin-bottom:.65rem}
+  
+  .lead-row{padding:.6rem .7rem;gap:.5rem}
+  .lead-rank{font-size:.95rem;width:1.6rem}
+  .lead-init{width:32px;height:32px;font-size:.8rem}
+  .lead-name{font-size:.78rem}
+  .lead-cat{font-size:.64rem}
+  .lead-bar{width:70px}
+  .lead-v{font-size:.64rem}
+  
+  .page-h h2{font-size:1.2rem;margin-bottom:1rem}
+  .page-h p{font-size:.75rem}
+  
+  .conf-icon{width:56px;height:56px;font-size:1.5rem}
+  .conf-title{font-size:1.35rem}
+  
+  /* EXTRA SMALL ADMIN STYLES */
+  #adminSidebar{padding:.4rem;gap:.2rem}
+  #adminContent{padding:1rem .8rem}
+  .sb-lnk{padding:.5rem .75rem;font-size:.68rem}
+  .adm-title{font-size:1rem;margin-bottom:.9rem}
+  .prog-switcher{padding:.6rem .8rem;gap:.4rem}
+  .prog-switcher label{font-size:.6rem}
+  .adm-tbl{font-size:.65rem;min-width:350px}
+  .adm-tbl th{padding:.35rem .4rem;font-size:.55rem}
+  .adm-tbl td{padding:.35rem .4rem}
+  .s-card{padding:.7rem}
+  
+  /* SMALL FORM FIXES */
+  .form-group{margin-bottom:.55rem}
+  .card{padding:1rem;margin-bottom:.8rem}
+  .ctrl-row{padding:.7rem .85rem;margin-bottom:.5rem}
+  .prog-mgmt-card{padding:.8rem;gap:.6rem}
+  
+  /* BUTTON SIZING */
+  .btn{padding:.5rem 1rem;font-size:.72rem;min-height:40px}
+  
+  /* DIVIDER */
+  .divider{margin:.7rem 0}
+  
+  /* TOUCH TARGETS */
+  .theme-btn{min-width:40px;min-height:40px}
+  .toggle{min-width:40px;min-height:40px}
+}
+
+@media(max-width:360px){
+  /* ULTRA MOBILE */
+  #topnav{padding:.45rem .6rem}
+  .nav-logo{font-size:.68rem}
+  .theme-btn{width:40px;height:40px;font-size:.7rem;min-width:40px;min-height:40px}
+  .nav-action{font-size:.55rem;padding:.25rem .5rem;min-height:40px;display:inline-flex;align-items:center}
+  
+  #adminSidebar{gap:.15rem;padding:.3rem}
+  .sb-lnk{padding:.4rem .6rem;font-size:.62rem}
+  
+  .adm-title{font-size:.95rem}
+  .adm-tbl{font-size:.62rem;min-width:300px}
+  .adm-tbl th{padding:.3rem .35rem;font-size:.52rem}
+  .adm-tbl td{padding:.3rem .35rem}
+  
+  #adminContent{padding:.8rem .6rem}
+  
+  .btn{padding:.5rem .9rem;font-size:.7rem;min-height:40px}
+  .card{padding:.9rem}
+  .form-group{margin-bottom:.5rem}
+  input,select,textarea{padding:.55rem .7rem;font-size:.8rem}
+  label{font-size:.6rem}
+  
+  .prog-switcher{padding:.55rem .7rem;gap:.3rem}
+  .badge{padding:.15rem .5rem;font-size:.62rem}
+  
+  .toggle{min-width:40px;min-height:40px}
+  .theme-btn{min-width:40px;min-height:40px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="topnav">
+  <div class="nav-logo" onclick="navigateTo('home')">LESVOTE</div>
+  <div class="nav-center">
+    <div class="nav-link active" onclick="navigateTo('home')">Home</div>
+    <div class="nav-link" onclick="navigateTo('about')">About Us</div>
+    <div class="nav-link" onclick="navigateTo('nominations')">Nominations</div>
+    <div class="nav-link" onclick="navigateTo('contact')">Contact Us</div>
+  </div>
+  <div class="nav-right">
+    <span id="votingStatusBadge" class="badge badge-green hidden">Voting Open</span>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle light/dark">🌙</button>
+    <button class="nav-action" id="adminToggle" onclick="handleAdminClick()">Sign In</button>
+  </div>
+</nav>
+
+<!-- ADMIN LOGIN MODAL -->
+<div class="overlay hidden" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLogin()">✕</button>
+    <div class="modal-title">Admin Login</div>
+    <div class="modal-sub">Enter credentials to access the dashboard</div>
+    <div class="form-group"><label>Username</label><input type="text" id="loginUser" placeholder="admin" autocomplete="username"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div id="loginErr" style="color:var(--red);font-size:.8rem;margin-bottom:.7rem;display:none">Incorrect username or password.</div>
+    <button class="btn btn-gold" style="width:100%;padding:.9rem" onclick="doLogin()">Sign In</button>
+  </div>
+</div>
+
+<!-- PAYSTACK PENDING MODAL -->
+<div class="overlay hidden" id="payModal">
+  <div class="modal" style="max-width:340px;text-align:center">
+    <div class="pulse-circle">📱</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;margin-bottom:.45rem" id="payModalTitle">Prompt Sent</div>
+    <p style="color:var(--muted);font-size:.86rem;line-height:1.6;margin-bottom:1.2rem" id="payModalMsg">Enter your mobile money PIN to confirm payment.</p>
+    <button class="btn btn-outline" onclick="cancelPay()">Cancel</button>
+  </div>
+</div>
+
+<!-- HOME PAGE -->
+<div id="homePage" class="active">
+  <div class="home-hero">
+    <div class="grid-bg"></div>
+    <div class="glow"></div>
+    <h1 class="hero-title">Secure Voting<br><span style="color:var(--gold)">Made Simple</span></h1>
+    <p class="hero-subtitle">Browse and vote in your favorite awards events using mobile money. Fast, secure, and transparent.</p>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search by event name or code..." onkeypress="if(event.key==='Enter')searchEvents()">
+      <button onclick="searchEvents()">Search</button>
+    </div>
+  </div>
+  <div class="events-section">
+    <h2>Featured Events</h2>
+    <div class="events-grid" id="eventsGrid"></div>
+    <div id="noEvents" class="empty-events" style="display:none">No events found. Try adjusting your search.</div>
+  </div>
+</div>
+
+<!-- ABOUT PAGE -->
+<div id="aboutPage" class="content-page">
+  <div class="page-container">
+    <h1 class="page-title">About LESVOTE</h1>
+    <div class="page-content">
+      <p>LESVOTE is a secure, transparent voting platform designed for awards events and ceremonies. We provide a modern solution for conducting fair and accessible voting for large audiences.</p>
+      <h3>Our Mission</h3>
+      <p>To empower organizations with a reliable, user-friendly voting system that ensures transparency, security, and accessibility for all participants.</p>
+      <h3>Why Choose LESVOTE?</h3>
+      <p>• <strong>Secure:</strong> All transactions are encrypted and verified through trusted payment gateways.<br>
+      • <strong>Transparent:</strong> Real-time vote counting and result tracking.<br>
+      • <strong>Accessible:</strong> Works on any device with internet connection.<br>
+      • <strong>Professional:</strong> Custom branding and event management features.</p>
+    </div>
+  </div>
+</div>
+
+<!-- NOMINATIONS PAGE -->
+<div id="nominationsPage" class="content-page">
+  <div class="page-container">
+    <h1 class="page-title">Current Nominees</h1>
+    <div class="page-content">
+      <p>View all nominees across all active events and categories. Click on any event above to cast your vote.</p>
+      <div id="nomineesList" style="margin-top:2rem">
+        <p style="color:var(--muted);text-align:center">Select an event to view nominees</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT PAGE -->
+<div id="contactPage" class="content-page">
+  <div class="page-container">
+    <h1 class="page-title">Contact Us</h1>
+    <div class="page-content">
+      <p>Have questions or need support? We'd love to hear from you.</p>
+      <h3>Get in Touch</h3>
+      <p><strong>Email:</strong> support@lesvote.com<br>
+      <strong>Phone:</strong> +233 XXX XXX XXXX<br>
+      <strong>Office Hours:</strong> Monday - Friday, 9AM - 5PM GMT</p>
+      <h3>For Event Organizers</h3>
+      <p>Interested in using LESVOTE for your event? Contact our sales team at <strong>events@lesvote.com</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- VOTER APP -->
+<div id="voterApp">
+
+  <!-- HUB: List of programmes -->
+  <div id="hubPage">
+    <div class="grid-bg"></div><div class="glow"></div>
+    <div class="eyebrow">Dinner &amp; Awards</div>
+    <h1 class="land-h1">Choose Your<em>Programme</em></h1>
+    <p class="land-p">Select an awards night below to view categories and vote for your nominees.</p>
+    <div class="prog-grid" id="hubGrid" role="region" aria-label="Available voting programmes"></div>
+    <div id="hubEmptyState" style="text-align:center;padding:2rem;color:var(--muted);font-size:.88rem;display:none" role="status">No programmes available yet. Check back later!</div>
+  </div>
+
+  <!-- LANDING: Per-programme -->
+  <div id="landingPage" class="hidden">
+    <div class="grid-bg"></div><div class="glow"></div>
+    <div style="position:relative;z-index:1;width:100%;max-width:700px">
+      <button class="btn btn-outline back" style="margin-bottom:1.5rem" onclick="goHub()">← All Programmes</button>
+    </div>
+    <div class="eyebrow" id="progEyebrow">Annual Celebration · 2025</div>
+    <h1 class="land-h1" id="progTitle">An Evening of<em id="progTitleEm">Excellence</em></h1>
+    <p class="land-p">Support your favourite nominees. Each vote = GHC <span id="landPrice">0.50</span></p>
+    <div class="chips" id="landingChips" role="group" aria-label="Quick category selection"></div>
+    <div id="catClosedNotif" style="display:none;text-align:center;padding:1.2rem;background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.28);color:var(--red);border-radius:3px;margin:1rem auto;max-width:300px;font-size:.86rem" role="alert" aria-live="assertive">⏸️ Voting is closed for this programme. Please check back later.</div>
+    <button class="vote-btn-big" onclick="goCats()">Vote Now →</button>
+    <div style="margin-top:1.15rem;position:relative;z-index:1;animation:fadeUp .7s .5s ease both" id="leaderboardBtnWrapper">
+      <button class="btn btn-outline" style="font-size:.76rem" onclick="showPage('leaderPage')">View Leaderboard</button>
+    </div>
+  </div>
+
+  <div id="categoryPage" class="hidden" style="padding-top:68px">
+    <div class="page-wrap">
+      <button class="btn btn-outline back" onclick="showPage('landingPage')">← Back</button>
+      <div class="page-h"><h2>Choose a Category</h2><p>Select a category to see nominees</p></div>
+      <div class="cat-grid" id="catGrid" role="region" aria-label="Category selection grid"></div>
+      <div id="catEmptyState" style="text-align:center;padding:2rem;color:var(--muted);font-size:.88rem;display:none" role="status">No categories available yet. Check back later!</div>
+    </div>
+  </div>
+
+  <div id="nomineePage" class="hidden" style="padding-top:68px">
+    <div class="page-wrap" style="max-width:1020px">
+      <button class="btn btn-outline back" onclick="showPage('categoryPage')">← Categories</button>
+      <div class="page-h">
+        <span class="badge badge-gold" id="nomPageCat" style="margin-bottom:.45rem"></span>
+        <h2 id="nomPageTitle">Pick your nominee</h2>
+        <p style="color:var(--muted);font-size:.86rem;margin-top:.28rem">Tap a card to select, then continue</p>
+      </div>
+      <div class="nom-grid" id="nomGrid" role="group" aria-label="Nominee selection grid"></div>
+      <div id="nomEmptyState" style="text-align:center;padding:2rem;color:var(--muted);font-size:.88rem;display:none" role="status">No nominees in this category yet.</div>
+      <div style="margin-top:1.4rem;display:flex;justify-content:flex-end">
+        <button class="btn btn-gold" id="contBtn" onclick="goVotePage()" disabled style="opacity:.4" aria-label="Continue to payment after selecting nominee">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="votePage" class="hidden" style="padding-top:68px">
+    <div class="page-wrap" style="max-width:530px">
+      <button class="btn btn-outline back" onclick="showPage('nomineePage')">← Nominees</button>
+      <h2 style="font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:700;margin-bottom:1.35rem">Cast Your Vote</h2>
+      <div class="sum-card">
+        <div class="sum-av" id="sumAv"></div>
+        <div><div style="font-weight:500;font-size:.96rem" id="sumName"></div><div style="font-size:.76rem;color:var(--muted)" id="sumCat"></div></div>
+      </div>
+      <div class="form-group"><label for="voteQty">Number of Votes</label><input type="number" id="voteQty" min="1" value="10" step="1" oninput="updateCost()" aria-label="Number of votes to cast"></div>
+      <div class="cost-row"><div class="cost-lbl">Total Cost</div><div class="cost-val" id="costDisp" aria-live="polite" aria-label="Total cost">GHC 5.00</div></div>
+      <div class="form-group">
+        <label>Payment Method</label>
+        <div class="pay-methods" role="group" aria-label="Payment method selection">
+          <div class="pay-m act" id="pm-mtn" onclick="setPay('mtn')" role="button" tabindex="0" aria-pressed="true" onkeydown="if(event.key===' '||event.key==='Enter')setPay('mtn')"><div class="pm-name mtn-c">MTN MoMo</div><div class="pm-sub">Mobile Money</div></div>
+          <div class="pay-m" id="pm-telecel" onclick="setPay('telecel')" role="button" tabindex="0" aria-pressed="false" onkeydown="if(event.key===' '||event.key==='Enter')setPay('telecel')"><div class="pm-name tel-c">Telecel Cash</div><div class="pm-sub">Mobile Money</div></div>
+        </div>
+      </div>
+      <div class="form-group"><label for="voterPhone">Phone Number <span style="color:var(--muted);font-size:.7rem">(e.g. 024 000 0000)</span></label><input type="tel" id="voterPhone" placeholder="024 000 0000" oninput="formatPhoneInput(this)" aria-label="Ghana phone number"></div>
+      <div class="form-group"><label for="voterEmail">Email Address</label><input type="email" id="voterEmail" placeholder="your@email.com" aria-label="Email address for payment receipt"></div>
+      <div class="form-group"><label for="voterName">Your Name (optional)</label><input type="text" id="voterName" placeholder="For voting history" aria-label="Voter name optional"></div>
+      <div id="votePageErr" style="display:none;margin-bottom:1rem;padding:.9rem;border-radius:4px;background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.24);color:var(--red);font-size:.88rem;" aria-live="assertive" aria-atomic="true" role="alert"></div>
+      <button class="btn btn-gold" style="width:100%;padding:.95rem;font-size:.94rem" id="payBtn" onclick="startPayment()" aria-label="Process payment and cast vote">Pay &amp; Vote</button>
+      <p style="font-size:.73rem;color:var(--muted);text-align:center;margin-top:.65rem">A USSD/app prompt will be sent. Enter your PIN to confirm.</p>
+    </div>
+  </div>
+
+  <div id="confirmPage" class="hidden" style="padding-top:68px">
+    <div class="page-wrap" style="max-width:460px;text-align:center">
+      <div class="conf-icon" style="animation:confPulse 1.2s ease both">✓</div>
+      <div class="conf-title" style="animation:fadeUp .6s .2s ease both">Payment Confirmed!</div>
+      <p style="color:var(--muted);animation:fadeUp .6s .3s ease both">Your votes have been recorded successfully.</p>
+      <div class="conf-box" id="confDetails" style="animation:fadeUp .6s .4s ease both"></div>
+      <div style="display:flex;gap:.85rem;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-outline" onclick="showPage('categoryPage')">Vote Again</button>
+        <button class="btn btn-gold" onclick="showPage('leaderPage')">Leaderboard</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="leaderPage" class="hidden" style="padding-top:68px">
+    <div class="page-wrap" style="max-width:660px">
+      <button class="btn btn-outline back" onclick="showPage('landingPage')">← Home</button>
+      <div class="page-h"><h2>Leaderboard</h2><p style="color:var(--muted);font-size:.86rem;margin-top:.28rem">Live rankings — updated with every vote</p></div>
+      <div style="margin-bottom:1.15rem"><select id="leadCatSel" style="max-width:210px" onchange="renderLeaderboard()"><option value="all">All Categories</option></select></div>
+      <div id="leadList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="adminApp" class="hidden">
+  <div id="adminSidebar">
+    <div class="sb-sec">Overview</div>
+    <div class="sb-lnk active" role="button" tabindex="0" data-admin="overview" onclick="adminNav('overview',this)" onkeydown="adminNavKey(event,'overview',this)">Dashboard</div>
+    <div class="sb-sec">Management</div>
+    <div class="sb-lnk" role="button" tabindex="0" data-admin="programmes" onclick="adminNav('programmes',this)" onkeydown="adminNavKey(event,'programmes',this)">Programmes</div>
+    <div class="sb-lnk" role="button" tabindex="0" data-admin="categories" onclick="adminNav('categories',this)" onkeydown="adminNavKey(event,'categories',this)">Categories &amp; Nominees</div>
+    <div class="sb-lnk" role="button" tabindex="0" data-admin="transactions" onclick="adminNav('transactions',this)" onkeydown="adminNavKey(event,'transactions',this)">Transactions</div>
+    <div class="sb-lnk" role="button" tabindex="0" data-admin="fraud" onclick="adminNav('fraud',this)" onkeydown="adminNavKey(event,'fraud',this)">Fraud Control</div>
+    <div class="sb-sec" data-admin="admins" style="display:none">System</div>
+    <div class="sb-lnk" role="button" tabindex="0" data-admin="admins" style="display:none" onclick="adminNav('admins',this)" onkeydown="adminNavKey(event,'admins',this)">Manage Admins</div>
+    <div class="sb-sec">Reports</div>
+    <div class="sb-lnk" role="button" tabindex="0" data-admin="results" onclick="adminNav('results',this)" onkeydown="adminNavKey(event,'results',this)">Results</div>
+    <div class="sb-lnk" role="button" tabindex="0" data-admin="settings" onclick="adminNav('settings',this)" onkeydown="adminNavKey(event,'settings',this)">Settings</div>
+    <div class="sb-foot">
+      <div class="sb-av">A</div>
+      <div><div class="sb-uname" id="sbUname">admin</div><div class="sb-role" id="sbRole">Administrator</div></div>
+      <button class="sb-out" onclick="logout()" title="Logout">↩</button>
+    </div>
+  </div>
+
+  <div id="adminContent">
+
+    <!-- DASHBOARD -->
+    <div id="adminOverview" class="adm-page active">
+      <div class="adm-title">Dashboard</div>
+      <div class="prog-switcher">
+        <label>Viewing:</label>
+        <select id="adminProgSel" onchange="switchAdminProg()"></select>
+        <span id="adminProgStatusBadge" class="badge badge-green">Open</span>
+      </div>
+      <div class="stats-row" id="statRow"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.4rem">
+        <div class="card"><div style="font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem">Top Nominees</div><div id="ovTop"></div></div>
+        <div class="card"><div style="font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem">Recent Transactions</div><div id="ovTxn"></div></div>
+      </div>
+    </div>
+
+    <!-- PROGRAMMES MANAGEMENT -->
+    <div id="adminProgrammes" class="adm-page">
+      <div class="adm-title">Programmes</div>
+      <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:2rem;align-items:start" id="progMgmtGrid">
+        <div class="card" id="createProgCard">
+          <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem">Create New Programme</div>
+          <div class="form-group"><label>Programme Name</label><input type="text" id="newProgName" placeholder="e.g. Form 3 Dinner 2025"></div>
+          <div class="form-group"><label>Tagline / Description</label><input type="text" id="newProgDesc" placeholder="e.g. Class of 2025 · Westside Academy"></div>
+          <div class="form-group"><label>Icon (emoji)</label><input type="text" id="newProgIcon" placeholder="🏆" style="max-width:80px"></div>
+          <div class="form-group"><label>Vote Price (GHC)</label><input type="number" id="newProgPrice" value="0.50" step="0.10" min="0.10"></div>
+          <div class="form-group">
+            <label>Event Picture (optional)</label>
+            <div style="display:flex;gap:.6rem;align-items:flex-end">
+              <input type="file" id="newProgPhoto" accept="image/*" style="flex:1">
+              <button class="btn btn-outline" style="padding:.5rem .8rem;font-size:.75rem;white-space:nowrap" onclick="previewProgPhoto()">Preview</button>
+            </div>
+            <img id="progPhotoPreview" style="max-width:150px;max-height:150px;margin-top:.5rem;border-radius:3px;display:none">
+          </div>
+          <button class="btn btn-gold" onclick="createProg()">Create Programme</button>
+        </div>
+        <div id="allProgrammesList">
+          <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">All Programmes</div>
+          <div id="progMgmtList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORIES & NOMINEES -->
+    <div id="adminCategories" class="adm-page">
+      <div class="adm-title">Categories &amp; Nominees</div>
+      <div class="prog-switcher">
+        <label>Programme:</label>
+        <select id="catProgSel" onchange="switchAdminProg(); renderAdminCats()"></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:2rem;align-items:start">
+        <div>
+          <div class="card" style="margin-bottom:1rem">
+            <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem">Add Category</div>
+            <div class="form-group"><label>Name</label><input type="text" id="newCatName" placeholder="e.g. Best Dressed"></div>
+            <div class="form-group"><label>Icon</label><input type="text" id="newCatIcon" placeholder="🏆" style="max-width:80px"></div>
+            <button class="btn btn-gold" onclick="addCat()">Add Category</button>
+          </div>
+          <div class="card"><div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem">Categories</div><div id="catMgmtList"></div></div>
+        </div>
+        <div class="card">
+          <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem">Add Nominee</div>
+          <div class="form-group"><label>Category</label><select id="newNomCat"></select></div>
+          <div class="form-group"><label>Name</label><input type="text" id="newNomName" placeholder="Full name"></div>
+          <div class="form-group">
+            <label>Photo</label>
+            <div style="display:flex;gap:.6rem;align-items:flex-end">
+              <input type="file" id="newNomPhoto" accept="image/*" style="flex:1">
+              <button class="btn btn-outline" style="padding:.5rem .8rem;font-size:.75rem;white-space:nowrap" onclick="previewNomPhoto()">Preview</button>
+            </div>
+            <img id="nomPhotoPreview" style="max-width:150px;max-height:150px;margin-top:.5rem;border-radius:3px;display:none">
+          </div>
+          <button class="btn btn-gold" onclick="addNom()">Add Nominee</button>
+          <div class="divider"></div>
+          <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.7rem">All Nominees</div>
+          <div id="nomMgmtList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANSACTIONS -->
+    <div id="adminTransactions" class="adm-page">
+      <div class="adm-title">Transaction Log</div>
+      <div class="prog-switcher">
+        <label>Programme:</label>
+        <select id="txnProgSel" onchange="switchAdminProg(); renderAdminTxns()"></select>
+      </div>
+      <div class="card tbl-wrap">
+        <table class="adm-tbl"><thead><tr><th>Time</th><th>Reference</th><th>Phone</th><th>Nominee</th><th>Votes</th><th>Amount</th><th>Method</th><th>Status</th></tr></thead><tbody id="txnBody"></tbody></table>
+        <div id="txnEmpty" style="text-align:center;padding:2rem;color:var(--muted);font-size:.86rem">No transactions yet.</div>
+      </div>
+    </div>
+
+    <!-- FRAUD -->
+    <div id="adminFraud" class="adm-page">
+      <div class="adm-title">Fraud Control</div>
+      <div class="prog-switcher">
+        <label>Programme:</label>
+        <select id="fraudProgSel" onchange="switchAdminProg(); renderFraud()"></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-bottom:1.4rem">
+        <div class="card">
+          <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem">Block Number</div>
+          <div class="form-group"><label>Phone</label><input type="tel" id="blockPhone" placeholder="024xxxxxxx"></div>
+          <div class="form-group"><label>Reason</label><input type="text" id="blockReason" placeholder="Suspected fraud"></div>
+          <button class="btn btn-red" onclick="blockNum()">Block</button>
+        </div>
+        <div class="card"><div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem">Blocked Numbers</div><div id="blockedList"></div></div>
+      </div>
+      <div class="card">
+        <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem">Manual Vote Adjustment</div>
+        <div class="a2col"><div class="form-group"><label>Nominee</label><select id="adjNom"></select></div><div class="form-group"><label>Adjust By (±)</label><input type="number" id="adjAmt" placeholder="-50 or +20"></div></div>
+        <div class="form-group"><label>Reason</label><input type="text" id="adjReason" placeholder="e.g. Fraud reversal"></div>
+        <button class="btn btn-gold" onclick="applyAdj()">Apply Adjustment</button>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="adminResults" class="adm-page">
+      <div class="adm-title">Results &amp; Winners</div>
+      <div class="prog-switcher">
+        <label>Programme:</label>
+        <select id="resultsProgSel" onchange="switchAdminProg(); renderResults()"></select>
+      </div>
+      <div style="display:flex;gap:.7rem;flex-wrap:wrap;margin-bottom:1.4rem">
+        <button class="btn btn-gold" onclick="exportCSV()">Export CSV</button>
+        <button class="btn btn-outline" onclick="window.print()">Print Report</button>
+      </div>
+      <div id="resultsWrap"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="adminSettings" class="adm-page">
+      <div class="adm-title">Settings</div>
+      <div class="prog-switcher">
+        <label>Programme:</label>
+        <select id="settingsProgSel" onchange="switchAdminProg(); loadSettings()"></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;align-items:start" class="admin-info-grid">
+        <div>
+          <div class="card" style="margin-bottom:1.4rem">
+            <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem">Voting Controls</div>
+            <div class="ctrl-row">
+              <div><div style="font-weight:500;font-size:.88rem">Voting Status</div><div style="font-size:.76rem;color:var(--muted)">Open or close public voting</div></div>
+              <div class="toggle on" id="votingToggle" onclick="toggleVoting()"></div>
+            </div>
+            <div class="ctrl-row">
+              <div><div style="font-weight:500;font-size:.88rem">Show Results</div><div style="font-size:.76rem;color:var(--muted)">Allow voters to see vote counts & leaderboard</div></div>
+              <div class="toggle on" id="showResultsToggle" onclick="toggleShowResults()"></div>
+            </div>
+            <div class="form-group"><label>Vote Price (GHC)</label><input type="number" id="votePrice" value="0.50" step="0.10" min="0.10"></div>
+            <div class="form-group"><label>Voting Deadline</label><input type="datetime-local" id="voteDeadline"></div>
+            <div class="form-group"><label>Programme Name</label><input type="text" id="eventNameInput" value="Excellence Awards 2025"></div>
+            <div class="form-group"><label>Tagline</label><input type="text" id="eventTagInput" value="Annual Celebration · Class of 2025"></div>
+            <button class="btn btn-gold" onclick="saveSettings()">Save Settings</button>
+          </div>
+          <div class="card">
+            <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem">Change Admin Password</div>
+            <div class="form-group"><label>New Password</label><input type="password" id="settingsAdminPass" placeholder="Leave blank to keep current"></div>
+            <button class="btn btn-outline" onclick="changePass()">Update Password</button>
+          </div>
+        </div>
+        <div class="card">
+          <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem">Paystack Configuration</div>
+          <div style="background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.18);padding:.85rem;font-size:.78rem;color:var(--text2);margin-bottom:1rem;line-height:1.55">
+            🔑 Get your keys from <strong>dashboard.paystack.com</strong> → Settings → API Keys. Use <em>pk_test_...</em> for testing, <em>pk_live_...</em> for production.
+          </div>
+          <div class="form-group"><label>Paystack Public Key</label><input type="text" id="psKey" placeholder="pk_test_xxxxxxxxxxxxxxxxxxxx"></div>
+          <div class="form-group"><label>Organisation Email</label><input type="email" id="psEmail" placeholder="org@school.edu.gh"></div>
+          <div class="form-group">
+            <label style="margin-bottom:.6rem">Enabled Channels</label>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap">
+              <label style="display:flex;align-items:center;gap:.38rem;letter-spacing:0;text-transform:none;font-size:.86rem;color:var(--text);cursor:pointer"><input type="checkbox" id="chkMTN" checked style="width:auto;accent-color:var(--gold)"> MTN MoMo</label>
+              <label style="display:flex;align-items:center;gap:.38rem;letter-spacing:0;text-transform:none;font-size:.86rem;color:var(--text);cursor:pointer"><input type="checkbox" id="chkTel" checked style="width:auto;accent-color:var(--gold)"> Telecel Cash</label>
+            </div>
+          </div>
+          <button class="btn btn-gold" style="margin-bottom:1rem" onclick="savePSConfig()">Save Paystack Config</button>
+          <div class="divider"></div>
+          <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">Test Integration</div>
+          <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem">Send a GHC 1.00 test charge to verify your setup.</p>
+          <button class="btn btn-outline" onclick="testPS()">Run Test Charge</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN MANAGEMENT (Super Admin Only) -->
+    <div id="adminAdmins" class="adm-page">
+      <div class="adm-title">Manage Event Admins</div>
+      
+      <!-- Create Admin Section -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem">
+          <span>➕ Create New Event Admin</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;max-width:500px">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="newAdminUser" placeholder="e.g. physics_admin">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <div style="position:relative">
+              <input type="password" id="newAdminPass" placeholder="Min 8 characters" onkeyup="checkPasswordStrength()">
+              <div id="pwdStrengthBar" style="height:3px;background:var(--muted);margin-top:.3rem;border-radius:2px;overflow:hidden">
+                <div id="pwdStrengthFill" style="height:100%;width:0%;background:var(--red);transition:all .2s"></div>
+              </div>
+              <div id="pwdStrengthText" style="font-size:.65rem;color:var(--muted);margin-top:.2rem"></div>
+            </div>
+          </div>
+          <button class="btn btn-gold" onclick="createEventAdmin()" style="grid-column:1">Create Admin</button>
+          <div id="adminCreateMsg" style="font-size:.75rem;padding:.6rem;border-radius:3px;display:none;grid-column:1/3"></div>
+        </div>
+      </div>
+
+      <!-- Admins List Section -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between">
+          <span>👥 Event Admins</span>
+          <span id="adminCountBadge" style="font-size:.75rem;background:var(--gold);color:#0A0A0F;padding:.3rem .6rem;border-radius:2px">0 admins</span>
+        </div>
+        <div id="adminsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem"></div>
+        <div id="noAdminsMsg" style="text-align:center;color:var(--muted);padding:2rem;font-size:.85rem">No event admins created yet</div>
+      </div>
+
+      <!-- Assign Admins to Programmes -->
+      <div class="card">
+        <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1.2rem">🔗 Manage Admin Assignments</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem">
+          <div class="form-group">
+            <label>Admin</label>
+            <select id="assignAdminSel"></select>
+          </div>
+          <div class="form-group">
+            <label>Programme</label>
+            <select id="assignProgSel"></select>
+          </div>
+          <button class="btn btn-gold" style="align-self:flex-end" onclick="assignAdminToProg()">Assign</button>
+        </div>
+        <div style="margin-top:1rem" id="assignMsg"></div>
+        
+        <!-- Current Assignments Overview -->
+        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border)">
+          <div style="font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem">Current Assignments</div>
+          <div id="assignmentsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem">
+            <div style="color:var(--muted);font-size:.85rem">Loading assignments...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ═══════════════ GLOBAL STATE ═══════════════
+const G = {
+  loggedIn:false, adminRole:null, // 'super' or 'event'
+  adminUsername:'', managedEvents: [], adminId: null,
+  authToken: null,
+  theme:'dark',
+  psKey:'', psEmail:'',
+  activeProg: 0,      // index into programmes[]
+  adminProg: 0,       // which programme is shown in admin
+  programmes: [],
+  nextProgId: 1,
+};
+
+// Load persisted auth token
+G.authToken = localStorage.getItem('lesvoteAuthToken') || null;
+
+// Each programme has its own sub-state
+function mkProg(id, name, desc, icon, price){
+  return {
+    id, name, desc, icon,
+    votingOpen: true, votePrice: price||0.50,
+    categories:[], nominees:[],
+    transactions:[], blocked:[],
+    showResults: true,
+    nextCatId:1, nextNomId:1,
+  };
+}
+
+// Map a server event object to the local programme shape
+function mapEvent(e) {
+  const cats = e.categories || [];
+  const noms = e.nominees || [];
+  return {
+    id: e.id,
+    name: e.name,
+    desc: e.desc || '',
+    icon: e.icon || '🏆',
+    photo: e.photo || '',
+    votingOpen: e.votingOpen !== undefined ? e.votingOpen : true,
+    votePrice: e.votePrice || 0.50,
+    categories: cats,
+    nominees: noms,
+    transactions: e.transactions || [],
+    blocked: e.blocked || [],
+    showResults: e.showResults !== undefined ? e.showResults : true,
+    nextCatId: Math.max(...cats.map(c => c.id), 0) + 1,
+    nextNomId: Math.max(...noms.map(n => n.id), 0) + 1,
+  };
+}
+
+function mergeProgramData(oldProg, newProg) {
+  if(!oldProg) return newProg;
+  return {
+    ...oldProg,
+    ...newProg,
+    categories: newProg.categories.length ? newProg.categories : oldProg.categories,
+    nominees: newProg.nominees.length ? newProg.nominees : oldProg.nominees,
+    transactions: newProg.transactions.length ? newProg.transactions : oldProg.transactions,
+    blocked: newProg.blocked.length ? newProg.blocked : oldProg.blocked,
+  };
+}
+
+// Load programmes from backend
+async function loadProgrammesFromBackend(){
+  try {
+    const response = await fetch('/api/events');
+    const events = await response.json();
+    
+    G.programmes = events.map(mapEvent);
+    G.nextProgId = Math.max(...events.map(e => e.id), 0) + 1;
+    
+    restoreClientState();
+    renderHub();
+  } catch (error) {
+    console.error('Failed to load programmes:', error);
+    $('hubGrid').innerHTML = '<p style="color:var(--red);padding:2rem;text-align:center">Failed to connect to server. Please make sure the backend is running.</p>';
+  }
+}
+
+// Restore admin session from server after page refresh
+async function restoreAdminSession(){
+  if (!G.authToken) return;
+  try {
+    const res = await fetch('/api/me', {
+      headers: { 'Authorization': `Bearer ${G.authToken}` }
+    });
+    if (!res.ok) {
+      // Token expired or invalid — clear it
+      G.authToken = null;
+      localStorage.removeItem('lesvoteAuthToken');
+      return;
+    }
+    const data = await res.json();
+    G.loggedIn = true;
+    G.adminRole = data.role;
+    G.adminUsername = data.username;
+    G.adminId = data.adminId;
+    G.managedEvents = data.managedEvents || [];
+    $('sbUname').textContent = data.username;
+    $('sbRole').textContent = data.role === 'super' ? 'Super Admin' : 'Event Admin';
+    const av = document.querySelector('.sb-av');
+    if(av) av.textContent = (data.username[0]||'A').toUpperCase();
+    populateProgSelects();
+    updateAdminNav();
+  } catch(e) {
+    G.authToken = null;
+    localStorage.removeItem('lesvoteAuthToken');
+  }
+}
+
+async function loadPaystackConfig(){
+  try {
+    const response = await fetch('/api/paystack-config');
+    const config = await response.json();
+    if(config.publicKey){
+      G.psKey = config.publicKey;
+    }
+    if(config.email){
+      G.psEmail = config.email;
+    }
+  } catch (error) {
+    console.error('Failed to load Paystack config:', error);
+  }
+}
+
+function saveClientState(){
+  try {
+    const currentPage = VOTER_PAGES?.find(p => !$(p).classList.contains('hidden')) || 'hubPage';
+    window.localStorage.setItem('lesvoteState', JSON.stringify({
+      currentPage,
+      activeProg: G.activeProg,
+      adminProg: G.adminProg,
+      selCat: V.selCat,
+      selNom: V.selNom,
+      payMethod: V.payMethod,
+      voteQty: parseInt($('voteQty')?.value) || 1,
+      voterPhone: $('voterPhone')?.value || '',
+      voterEmail: $('voterEmail')?.value || '',
+      voterName: $('voterName')?.value || ''
+    }));
+  } catch (e) {}
+}
+
+function restoreClientState(){
+  try {
+    const saved = JSON.parse(window.localStorage.getItem('lesvoteState') || '{}');
+    if(Number.isInteger(saved.activeProg) && saved.activeProg >= 0 && saved.activeProg < G.programmes.length){
+      G.activeProg = saved.activeProg;
+    }
+    if(Number.isInteger(saved.adminProg) && saved.adminProg >= 0 && saved.adminProg < G.programmes.length){
+      G.adminProg = saved.adminProg;
+    }
+    if(Number.isInteger(saved.selCat)) V.selCat = saved.selCat;
+    if(Number.isInteger(saved.selNom)) V.selNom = saved.selNom;
+    if(saved.payMethod) V.payMethod = saved.payMethod;
+
+    if($('voteQty') && Number.isInteger(saved.voteQty) && saved.voteQty > 0){
+      $('voteQty').value = saved.voteQty;
+    }
+    if($('voterPhone') && typeof saved.voterPhone === 'string'){
+      $('voterPhone').value = saved.voterPhone;
+    }
+    if($('voterEmail') && typeof saved.voterEmail === 'string'){
+      $('voterEmail').value = saved.voterEmail;
+    }
+    if($('voterName') && typeof saved.voterName === 'string'){
+      $('voterName').value = saved.voterName;
+    }
+
+    if(saved.currentPage && VOTER_PAGES?.includes(saved.currentPage)){
+      if(saved.currentPage === 'hubPage'){
+        showPage('hubPage');
+      } else if(saved.currentPage === 'landingPage'){
+        openProg(G.activeProg);
+      } else if(saved.currentPage === 'categoryPage'){
+        openProg(G.activeProg);
+        showPage('categoryPage');
+      } else if(saved.currentPage === 'nomineePage'){
+        openProg(G.activeProg);
+        showPage('nomineePage');
+      } else if(saved.currentPage === 'votePage'){
+        openProg(G.activeProg);
+        setPay(V.payMethod);
+        if(V.selNom) goVotePage(); else showPage('votePage');
+      } else if(saved.currentPage === 'confirmPage'){
+        openProg(G.activeProg);
+        setPay(V.payMethod);
+        if(V.selNom) goVotePage();
+        showPage('confirmPage');
+      } else if(saved.currentPage === 'leaderPage'){
+        openProg(G.activeProg);
+        showPage('leaderPage');
+      }
+    }
+  } catch (e) {}
+}
+
+// Per-voter session state
+let V = { selCat:null, selNom:null, payMethod:'mtn' };
+let pendingTxn = null;
+
+// ═══════════════ HELPERS ═══════════════
+const $ = id => document.getElementById(id);
+const ini = n => n.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+const genRef = () => 'AW-'+Math.random().toString(36).substr(2,8).toUpperCase();
+const fmt = n => 'GHC '+parseFloat(n).toFixed(2);
+
+// Active programme shortcuts
+const AP = () => G.programmes[G.activeProg];
+const ADM = () => G.programmes[G.adminProg];
+const getC = (id,prog) => (prog||AP()).categories.find(c=>c.id===id);
+const getN = (id,prog) => (prog||AP()).nominees.find(n=>n.id===id);
+
+// ═══════════════ THEME ═══════════════
+function toggleTheme(){
+  G.theme = G.theme==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme', G.theme);
+  $('themeBtn').textContent = G.theme==='dark'?'🌙':'☀️';
+}
+
+// ═══════════════ PAGE ROUTING ═══════════════
+const VOTER_PAGES = ['hubPage','landingPage','categoryPage','nomineePage','votePage','confirmPage','leaderPage'];
+function showPage(id){
+  VOTER_PAGES.forEach(p=>$(p).classList.toggle('hidden',p!==id));
+  // Show voterApp when showing voter pages
+  $('homePage').style.display = 'none';
+  $('aboutPage').style.display = 'none';
+  $('nominationsPage').style.display = 'none';
+  $('contactPage').style.display = 'none';
+  $('voterApp').style.display = 'block';
+  // nav badge
+  const inProg = !['hubPage'].includes(id);
+  $('votingStatusBadge').classList.toggle('hidden',!inProg);
+  if(inProg){
+    const p=AP();
+    $('votingStatusBadge').className='badge '+(p.votingOpen?'badge-green':'badge-red');
+    $('votingStatusBadge').textContent=p.votingOpen?'Voting Open':'Voting Closed';
+  }
+  if(id==='categoryPage') renderCatGrid();
+  if(id==='leaderPage') renderLeaderboard();
+  if(id==='landingPage'){
+    const wrapper = $('leaderboardBtnWrapper');
+    if(wrapper) wrapper.style.display = AP().showResults ? '' : 'none';
+  }
+  saveClientState();
+}
+
+function goHub(){
+  showPage('hubPage');
+  renderHub();
+}
+
+function openProg(idx){
+  G.activeProg = idx;
+  const p = AP();
+  $('progEyebrow').textContent = p.desc || 'Annual Celebration · 2025';
+  $('progTitle').innerHTML = 'An Evening of<em id="progTitleEm">' + p.name.split(' ').pop() + '</em>';
+  $('landPrice').textContent = p.votePrice.toFixed(2);
+  $('landingPage').style.backgroundImage = p.photo ? `linear-gradient(rgba(0,0,0,.18),rgba(0,0,0,.18)),url('${p.photo}')` : '';
+  renderLandingChips();
+  showPage('landingPage');
+}
+
+function goCats(){
+  if(!AP().votingOpen){
+    const msg = document.getElementById('catClosedNotif');
+    if(msg){
+      msg.style.display = 'block';
+      setTimeout(()=>{msg.style.display='none';}, 3500);
+    } else {
+      alert('Voting is currently closed for this programme. Please check back later.');
+    }
+    return;
+  }
+  showPage('categoryPage');
+}
+
+// ═══════════════ HUB ═══════════════
+function renderHub(){
+  $('hubGrid').innerHTML = G.programmes.map((p,i)=>{
+    const cats=p.categories.length;
+    const totalVotes=p.nominees.reduce((a,n)=>a+n.votes,0);
+    const votesText = p.showResults ? `· ${totalVotes.toLocaleString()} votes` : '';
+    const bgStyle = p.photo ? `background-image:linear-gradient(rgba(0,0,0,.22),rgba(0,0,0,.22)),url('${p.photo}')` : '';
+    return `<div class="prog-card${!p.votingOpen?' closed':''}${p.photo?' prog-cover':''}" onclick="openProg(${i})" style="${bgStyle}">
+      <div class="prog-icon">${p.icon||'🏆'}</div>
+      <div class="prog-name">${p.name}</div>
+      <div class="prog-desc">${p.desc||''}</div>
+      <div class="prog-meta">
+        <span class="prog-status">${p.votingOpen?'Voting Open':'Voting Closed'}</span>
+        <span class="prog-cats">${cats} categor${cats!==1?'ies':'y'} ${votesText}</span>
+      </div>
+    </div>`;
+  }).join('') || '<p style="color:var(--muted);font-size:.88rem;text-align:center;padding:2rem">No programmes yet. Ask an admin to create one.</p>';
+}
+
+// ═══════════════ VOTER FLOWS ═══════════════
+function renderLandingChips(){
+  const cats = AP().categories;
+  if(!cats.length){
+    $('landingChips').innerHTML = '<div style="color:var(--muted);font-size:.86rem">Categories coming soon...</div>';
+  } else {
+    $('landingChips').innerHTML = cats.map(c=>
+      `<div class="chip" onclick="selectCat(${c.id})" role="button" tabindex="0" aria-label="${c.name}" onkeydown="if(event.key==='Enter'||event.key===' ')selectCat(${c.id})" style="cursor:pointer">${c.icon} ${c.name}</div>`).join('');
+  }
+  $('landPrice').textContent = AP().votePrice.toFixed(2);
+}
+
+function renderCatGrid(){
+  const p=AP();
+  const categories = p.categories || [];
+  if(!categories.length){
+    $('catGrid').innerHTML = '';
+    $('catEmptyState').style.display = 'block';
+    return;
+  }
+  $('catEmptyState').style.display = 'none';
+  $('catGrid').innerHTML = categories.map(c=>{
+    const n=p.nominees.filter(n=>n.catId===c.id).length;
+    return `<div class="cat-card" onclick="selectCat(${c.id})" role="button" tabindex="0" aria-label="${c.name}: ${n} nominee${n!==1?'s':''}" onkeydown="if(event.key==='Enter'||event.key===' ')selectCat(${c.id})"><div class="ci">${c.icon}</div><div class="cn">${c.name}</div><div class="cc">${n} nominee${n!==1?'s':''}</div></div>`;
+  }).join('');
+}
+
+function selectCat(id){
+  if(!AP().votingOpen){
+    const msg = document.getElementById('catClosedNotif');
+    if(msg){
+      msg.style.display = 'block';
+      setTimeout(()=>{msg.style.display='none';}, 3500);
+    } else {
+      alert('Voting is currently closed.');
+    }
+    return;
+  }
+  V.selCat=id; V.selNom=null;
+  const c=getC(id);
+  $('nomPageCat').textContent=c.name;
+  $('nomPageTitle').textContent='Choose your nominee';
+  renderNomGrid();
+  const b=$('contBtn'); b.disabled=true; b.style.opacity='.4';
+  showPage('nomineePage');
+}
+
+function renderNomGrid(){
+  const p = AP();
+  const nominations = p.nominees.filter(n=>n.catId===V.selCat);
+  if(!nominations.length){
+    $('nomGrid').innerHTML = '';
+    $('nomEmptyState').style.display = 'block';
+    return;
+  }
+  $('nomEmptyState').style.display = 'none';
+  $('nomGrid').innerHTML = nominations.map(n=>{
+    const votesDisplay = p.showResults ? `<div class="nom-votes">${n.votes.toLocaleString()} votes</div>` : '';
+    return `
+    <div class="nom-card" id="nc-${n.id}" onclick="pickNom(${n.id})" role="button" tabindex="0" aria-label="Select ${n.name}${p.showResults ? ': ' + n.votes.toLocaleString() + ' votes' : ''}" onkeydown="if(event.key==='Enter'||event.key===' ')pickNom(${n.id})">
+      <div class="sel-tick" aria-hidden="true">✓</div>
+      ${n.photo?`<img src="${n.photo}" alt="${n.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`:``}
+      <div class="nom-av" ${n.photo?'style="display:none"':''}>${ini(n.name)}</div>
+      <div class="nom-info"><div class="nom-name">${n.name}</div>${votesDisplay}</div>
+    </div>`;
+  }).join('');
+}
+
+function pickNom(id){
+  document.querySelectorAll('.nom-card').forEach(c=>c.classList.remove('sel'));
+  const selected = $('nc-'+id);
+  if(selected) selected.classList.add('sel');
+  V.selNom=id;
+  const b=$('contBtn'); b.disabled=false; b.style.opacity='1';
+  saveClientState();
+}
+
+function goVotePage(){
+  if(!V.selNom||!AP().votingOpen) return;
+  const n=getN(V.selNom), c=getC(V.selCat);
+  $('sumName').textContent=n.name; $('sumCat').textContent=c.name;
+  const av=$('sumAv');
+  av.innerHTML=n.photo?`<img src="${n.photo}" onerror="this.parentNode.textContent='${ini(n.name)}'">`:`${ini(n.name)}`;
+  clearVoteError();
+  updateCost(); showPage('votePage');
+}
+
+function updateCost(){
+  const qtyEl = $('voteQty');
+  let q = Math.max(1, parseInt(qtyEl.value) || 1);
+  qtyEl.value = q;
+  $('costDisp').textContent=fmt(q*AP().votePrice);
+  const payBtn = $('payBtn');
+  if(payBtn) payBtn.disabled = q <= 0;
+}
+
+// ═══════════════ PHONE FORMATTING & VALIDATION ═══════════════
+/** Format Ghana phone number as user types: 024 000 0000 */
+function formatGhanaPhone(phone){
+  if(!phone) return '';
+  // Remove all non-digits
+  let digits = phone.replace(/\D/g,'');
+  // Handle both 024... and 024... (with or without leading 0)
+  if(digits.length === 9 && /^[2-5]/.test(digits)) digits = '0' + digits;
+  // Format as XXX XXX XXXX
+  if(digits.length <= 3) return digits;
+  if(digits.length <= 6) return digits.slice(0,3) + ' ' + digits.slice(3);
+  return digits.slice(0,3) + ' ' + digits.slice(3,6) + ' ' + digits.slice(6,10);
+}
+
+/** Validate Ghana phone number - returns {valid: bool, error: string} */
+function validateGhanaPhone(phone){
+  if(!phone || !phone.trim()) return {valid:false,error:'Phone number is required'};
+  const digits = phone.replace(/\D/g,'');
+  // Valid: 024-054 or 234-254 (Ghana country code or local)
+  const isValidGhana = /^(0[2-5][0-9]{8}|[2-5][0-9]{8})$/.test(digits);
+  if(!isValidGhana) return {valid:false,error:'Enter a valid Ghana number (e.g. 024 000 0000)'};
+  return {valid:true,error:''};
+}
+
+/** Auto-format phone input as user types */
+function formatPhoneInput(input){
+  const cursorPos = input.selectionStart;
+  const oldLen = input.value.length;
+  input.value = formatGhanaPhone(input.value);
+  // Adjust cursor position for spaces added
+  const newLen = input.value.length;
+  if(newLen > oldLen) input.setSelectionRange(cursorPos+1, cursorPos+1);
+}
+
+/** Show inline error in vote page */
+function showVoteError(message){
+  const err = $('votePageErr');
+  if(!err) return;
+  err.className = 'inline-error';
+  err.innerHTML = '❌ ' + message;
+  err.style.display = 'block';
+  // Auto-dismiss after 6 seconds
+  setTimeout(()=>{ if(err.innerHTML.includes(message)) err.style.display='none'; }, 6000);
+}
+
+/** Clear inline error */
+function clearVoteError(){
+  const err = $('votePageErr');
+  if(err) err.style.display = 'none';
+}
+
+function setPay(m){
+  V.payMethod=m;
+  const mtn = $('pm-mtn');
+  const tel = $('pm-telecel');
+  if(mtn && tel){
+    mtn.classList.toggle('act',m==='mtn');
+    tel.classList.toggle('act',m==='telecel');
+    mtn.setAttribute('aria-pressed', m==='mtn');
+    tel.setAttribute('aria-pressed', m==='telecel');
+  }
+  saveClientState();
+}
+
+// ═══════════════ PAYSTACK PAYMENT ═══════════════
+function startPayment(){
+  clearVoteError();
+  const p=AP();
+  const phoneRaw = $('voterPhone').value||'';
+  const phone = phoneRaw.replace(/\D/g,'');
+  const email = ($('voterEmail').value||'').trim();
+  const qty=Math.max(1,parseInt($('voteQty').value)||1);
+  const name=($('voterName').value||'').trim()||'Anonymous';
+  const payBtn = $('payBtn');
+
+  if(!email){
+    showVoteError('Please enter your email address for payment receipt.');
+    $('voterEmail').focus();
+    return;
+  }
+
+  const phoneValidation = validateGhanaPhone(phoneRaw);
+  if(!phoneValidation.valid){
+    showVoteError(phoneValidation.error);
+    $('voterPhone').focus();
+    return;
+  }
+
+  if(p.blocked.includes(phone) || p.blocked.includes('0'+phone)){
+    showVoteError('This number is blocked from voting. Contact the organiser.');
+    return;
+  }
+
+  const amtGHS=parseFloat((qty*p.votePrice).toFixed(2));
+  const amtPesewas=Math.round(amtGHS*100);
+  const ref=genRef();
+  pendingTxn={ref,phone,qty,name,amtGHS,nomId:V.selNom,catId:V.selCat,progIdx:G.activeProg};
+  if(payBtn) payBtn.disabled = true;
+
+  if(!G.psKey){
+    $('payModalTitle').textContent='Demo Mode';
+    $('payModalMsg').textContent=`No Paystack key configured. Simulating ${fmt(amtGHS)} payment for demo. Set your key in Admin → Settings.`;
+    $('payModal').classList.remove('hidden');
+    setTimeout(()=>{
+      $('payModal').classList.add('hidden');
+      if(payBtn) payBtn.disabled = false;
+      finaliseTxn(ref,{gateway_response:'Demo Approved'});
+    },2800);
+    return;
+  }
+  const providerMap={mtn:'mtn',telecel:'voda'};
+  try{
+    const handler=PaystackPop.setup({
+      key:G.psKey,email:email,amount:amtPesewas,currency:'GHS',ref,
+      channels:['mobile_money'],
+      metadata:{
+        custom_fields:[
+          {display_name:'Voter',variable_name:'voter',value:name},
+          {display_name:'Email',variable_name:'email',value:email},
+          {display_name:'Nominee',variable_name:'nominee',value:getN(V.selNom)?.name||''},
+          {display_name:'Votes',variable_name:'votes',value:qty},
+          {display_name:'Programme',variable_name:'programme',value:p.name},
+        ],
+        mobile_money:{phone,provider:providerMap[V.payMethod]},
+      },
+      onLoad(){
+        $('payModalTitle').textContent=V.payMethod==='mtn'?'MTN MoMo Prompt Sent':'Telecel Cash Prompt Sent';
+        $('payModalMsg').textContent=`A payment of ${fmt(amtGHS)} has been initiated to ${formatGhanaPhone(phoneRaw)}. Enter your mobile money PIN to confirm.`;
+        $('payModal').classList.remove('hidden');
+      },
+      onSuccess(res){
+        $('payModal').classList.add('hidden');
+        finaliseTxn(res.reference,res);
+      },
+      onCancel(){
+        $('payModal').classList.add('hidden');
+        pendingTxn=null;
+        if(payBtn) payBtn.disabled = false;
+      },
+    });
+    handler.openIframe();
+  }catch(e){
+    if(payBtn) payBtn.disabled = false;
+    showVoteError('Paystack error: ' + e.message + ' Check your Paystack public key in Admin → Settings.');
+    pendingTxn=null;
+  }
+}
+
+function cancelPay(){$('payModal').classList.add('hidden');pendingTxn=null;}
+
+function finaliseTxn(ref,res){
+  if(!pendingTxn) return;
+  const {phone,qty,name,amtGHS,nomId,catId,progIdx}=pendingTxn;
+  const p=G.programmes[progIdx];
+  
+  // Send vote to backend
+  fetch(`/api/events/${p.id}/vote`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({nomineeId: nomId, votes: qty, phone, name, method: V.payMethod})
+  })
+  .then(r => r.json())
+  .then(data => {
+    // Check for server errors
+    if(!data.success){
+      throw new Error(data.error || 'Vote recording failed');
+    }
+    // Update local state
+    const n=p.nominees.find(n=>n.id===nomId);
+    const c=p.categories.find(c=>c.id===catId);
+    if(!n || !c) throw new Error('Nominee or category not found');
+    n.votes += qty;
+    const now = new Date();
+    const txn = {id:ref,time:now.toISOString(),phone,name,nomId,nomName:n.name,catName:c.name,qty,amt:amtGHS,method:V.payMethod,status:'success'};
+    p.transactions = [txn, ...(p.transactions || [])];
+    pendingTxn = null;
+    renderHub();
+    if(document.getElementById('txnBody')) renderAdminTxns();
+    $('confDetails').innerHTML=`
+      <div class="conf-row"><span>Programme</span><span>${p.name}</span></div>
+      <div class="conf-row"><span>Nominee</span><span>${n.name}</span></div>
+      <div class="conf-row"><span>Category</span><span>${c.name}</span></div>
+      <div class="conf-row"><span>Votes Cast</span><span>${qty.toLocaleString()}</span></div>
+      <div class="conf-row"><span>Amount Paid</span><span>${fmt(amtGHS)}</span></div>
+      <div class="conf-row"><span>Method</span><span>${V.payMethod==='mtn'?'MTN MoMo':'Telecel Cash'}</span></div>
+      <div class="conf-row"><span>Phone</span><span>${formatGhanaPhone(phone)}</span></div>
+      <div class="conf-row"><span>Reference</span><span style="font-size:.76rem">${ref}</span></div>`;
+    showPage('confirmPage');
+    refreshAdmin();
+  })
+  .catch(e => {
+    alert('Error recording vote: ' + e.message);
+    pendingTxn = null;
+  });
+}
+
+// ═══════════════ LEADERBOARD ═══════════════
+function renderLeaderboard(){
+  const p=AP();
+  if(!p.showResults){
+    $('leadList').innerHTML='<p style="color:var(--muted);font-size:.86rem;text-align:center;padding:2rem">Results are not yet available. Check back later!</p>';
+    return;
+  }
+  const sel=$('leadCatSel');
+  sel.innerHTML='<option value="all">All Categories</option>'+
+    p.categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  const fv=sel.value;
+  let noms=[...p.nominees];
+  if(fv!=='all') noms=noms.filter(n=>n.catId==fv);
+  noms.sort((a,b)=>b.votes-a.votes);
+  const mx=Math.max(...noms.map(n=>n.votes),1);
+  $('leadList').innerHTML=noms.slice(0,20).map((n,i)=>{
+    const c=p.categories.find(c=>c.id===n.catId);
+    return `<div class="lead-row">
+      <div class="lead-rank">${i+1}</div>
+      <div class="lead-init">${ini(n.name)}</div>
+      <div class="lead-info"><div class="lead-name">${n.name}</div><div class="lead-cat">${c?c.icon+' '+c.name:''}</div></div>
+      <div class="lead-bar"><div class="bar-bg"><div class="bar-fill" style="width:${Math.round(n.votes/mx*100)}%"></div></div><div class="lead-v">${n.votes.toLocaleString()}</div></div>
+    </div>`;
+  }).join('')||'<p style="color:var(--muted);font-size:.86rem">No nominees found.</p>';
+}
+
+// ═══════════════ ADMIN AUTH ═══════════════
+function handleAdminClick(){
+  if(G.loggedIn){
+    const inAdmin=!$('adminApp').classList.contains('hidden');
+    $('adminApp').classList.toggle('hidden',inAdmin);
+    $('voterApp').classList.toggle('hidden',!inAdmin);
+    $('adminToggle').textContent=inAdmin?'Admin':'← Voter';
+    $('adminToggle').classList.toggle('admin-active',!inAdmin);
+    if(!inAdmin) refreshAdmin();
+  } else {
+    $('loginModal').classList.remove('hidden');
+    setTimeout(()=>$('loginUser').focus(),80);
+  }
+}
+
+function closeLogin(){$('loginModal').classList.add('hidden');}
+
+function doLogin(){
+  const u=($('loginUser').value||'').trim();
+  const p=($('loginPass').value||'').trim();
+  
+  // Try backend login first (supports both super admin and event admins)
+  fetch('/api/login', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({username: u, password: p})
+  })
+  .then(r => {
+    if(!r.ok) {
+      throw new Error('Invalid credentials');
+    }
+    return r.json();
+  })
+  .then(res => {
+    if(res.error){
+      $('loginErr').style.display='block';
+      $('loginPass').value='';$('loginPass').focus();
+      return;
+    }
+    
+    // Login successful
+    G.loggedIn = true;
+    G.authToken = res.token; // Store auth token for API calls
+    localStorage.setItem('lesvoteAuthToken', res.token); // Persist token
+    G.adminRole = res.role; // 'super' or 'event'
+    G.adminUsername = res.username;
+    G.adminId = res.adminId;
+    G.managedEvents = res.managedEvents || [];
+    
+    $('loginModal').classList.add('hidden');
+    $('loginPass').value='';
+    $('loginErr').style.display='none';
+    
+    // Update sidebar
+    $('sbUname').textContent = u;
+    const roleText = G.adminRole === 'super' ? 'Super Admin' : 'Event Admin';
+    $('sbRole').textContent = roleText;
+    const av = document.querySelector('.sb-av');
+    if(av) av.textContent = (u[0]||'A').toUpperCase();
+    
+    $('adminApp').classList.remove('hidden');
+    $('voterApp').classList.add('hidden');
+    $('adminToggle').textContent='← Voter';
+    $('adminToggle').classList.add('admin-active');
+    
+    populateProgSelects();
+    updateAdminNav();
+    refreshAdmin();
+  })
+  .catch(e => {
+    $('loginErr').style.display='block';
+    console.error('Login error:', e);
+  });
+}
+
+function logout(){
+  G.loggedIn=false;
+  G.authToken = null;
+  localStorage.removeItem('lesvoteAuthToken'); // Clear persisted token
+  $('adminApp').classList.add('hidden');
+  $('voterApp').classList.remove('hidden');
+  $('adminToggle').textContent='Admin';
+  $('adminToggle').classList.remove('admin-active');
+}
+
+// ═══════════════ PROGRAMME SELECTS (admin) ═══════════════
+const PROG_SELS = ['adminProgSel','catProgSel','txnProgSel','fraudProgSel','resultsProgSel','settingsProgSel'];
+
+function populateProgSelects(){
+  // For event admins, filter to only their managed programmes
+  let visibleProgs = G.programmes;
+  if(G.adminRole === 'event'){
+    visibleProgs = G.programmes.filter(p => G.managedEvents.includes(p.id));
+  }
+  
+  const opts = visibleProgs.length
+    ? visibleProgs.map((p,i)=>`<option value="${G.programmes.indexOf(p)}">${p.icon} ${p.name}</option>`).join('')
+    : '<option value="">-- No programmes available --</option>';
+  PROG_SELS.forEach(id=>{
+    const el=$(id); if(!el) return;
+    const cur = visibleProgs.length ? el.value : '';
+    el.innerHTML = opts;
+    el.value = cur || (visibleProgs.length ? '0' : '');
+    el.disabled = !visibleProgs.length;
+  });
+  // sync to G.adminProg
+  G.adminProg = visibleProgs.length ? parseInt($('adminProgSel').value)||0 : 0;
+}
+
+function updateAdminNav(){
+  const isSuperAdmin = G.adminRole === 'super';
+  
+  // Show/hide super admin only sections
+  const adminLnks = document.querySelectorAll('[data-admin="admins"]');
+  adminLnks.forEach(lnk => lnk.style.display = isSuperAdmin ? '' : 'none');
+  
+  // Show/hide fraud control (event admins can't manually change votes)
+  const fraudLnks = document.querySelectorAll('[data-admin="fraud"]');
+  fraudLnks.forEach(lnk => lnk.style.display = G.adminRole === 'event' ? 'none' : '');
+}
+
+// ═══════════════ ADMIN MANAGEMENT (Super Admin) ═══════════════
+let allEventAdmins = [];
+
+function checkPasswordStrength(){
+  const pwd = $('newAdminPass').value || '';
+  const fill = $('pwdStrengthFill');
+  const text = $('pwdStrengthText');
+  
+  let strength = 0;
+  let label = '';
+  let color = '#dc2626';
+  
+  if(pwd.length >= 8) strength += 25;
+  if(pwd.length >= 12) strength += 25;
+  if(/[A-Z]/.test(pwd)) strength += 25;
+  if(/[0-9!@#$%^&*]/.test(pwd)) strength += 25;
+  
+  if(strength === 0) { label = 'Too short'; color = '#dc2626'; }
+  else if(strength <= 25) { label = 'Weak'; color = '#dc2626'; }
+  else if(strength <= 50) { label = 'Fair'; color = '#ff9800'; }
+  else if(strength <= 75) { label = 'Good'; color = '#4CAF50'; }
+  else { label = 'Strong'; color = '#16a34a'; }
+  
+  fill.style.width = strength + '%';
+  fill.style.background = color;
+  text.textContent = label;
+  text.style.color = color;
+}
+
+function renderAdminsList(){
+  fetch('/api/admin/eventadmins', {
+    headers: { 'Authorization': `Bearer ${G.authToken}` }
+  })
+    .then(r => r.json())
+    .then(admins => {
+      allEventAdmins = admins;
+      
+      // Update count badge
+      $('adminCountBadge').textContent = (admins.length || 0) + (admins.length === 1 ? ' admin' : ' admins');
+      
+      if(!admins || admins.length === 0){
+        $('adminsList').innerHTML = '';
+        $('noAdminsMsg').style.display = 'block';
+        $('assignAdminSel').innerHTML = '<option value="">-- No admins --</option>';
+        return;
+      }
+      
+      $('noAdminsMsg').style.display = 'none';
+      $('adminsList').innerHTML = admins.map(a => `
+        <div style="padding:1rem;background:var(--surface2);border:1px solid var(--border);border-radius:4px;display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <div style="font-weight:600;font-size:.95rem;color:var(--text);word-break:break-all">${a.username}</div>
+            <div style="font-size:.72rem;color:var(--muted);margin-top:.4rem">
+              📋 ${(a.events?.length || 0)} programme${(a.events?.length || 1) === 1 ? '' : 's'}
+            </div>
+            <div style="margin-top:.6rem;display:flex;gap:.35rem;flex-wrap:wrap">
+              ${a.events?.length > 0 ? a.events.map(eid => {
+                const prog = G.programmes.find(p => p.id == eid);
+                return prog ? `<span class="badge badge-blue" style="font-size:.65rem">${prog.icon} ${prog.name.substring(0,15)}</span>` : '';
+              }).join('') : '<span style="font-size:.7rem;color:var(--muted);opacity:.6">No programmes assigned</span>'}
+            </div>
+          </div>
+          <button class="btn btn-outline" style="margin-top:1rem;font-size:.75rem;padding:.5rem .8rem;color:var(--red);border-color:var(--red)" onclick="deleteEventAdmin('${a.id}','${a.username}')">
+            🗑️ Delete
+          </button>
+        </div>
+      `).join('');
+      
+      // Populate assignment select
+      $('assignAdminSel').innerHTML = admins.map(a => `<option value="${a.id}">${a.username}</option>`).join('');
+      
+      // Render assignments overview
+      renderAssignmentsList();
+    })
+    .catch(e => {
+      console.error('Error loading admins:', e);
+      $('adminsList').innerHTML = '<div style="color:var(--red);font-size:.85rem">Error loading admins</div>';
+    });
+}
+
+function createEventAdmin(){
+  const u = ($('newAdminUser').value || '').trim();
+  const p = ($('newAdminPass').value || '').trim();
+  const msg = $('adminCreateMsg');
+  
+  if(!u) {
+    msg.textContent = '❌ Enter a username';
+    msg.style.background = 'rgba(220,38,38,.15)';
+    msg.style.color = 'var(--red)';
+    msg.style.display = 'block';
+    return;
+  }
+  
+  if(!p || p.length < 8) {
+    msg.textContent = '❌ Password must be at least 8 characters';
+    msg.style.background = 'rgba(220,38,38,.15)';
+    msg.style.color = 'var(--red)';
+    msg.style.display = 'block';
+    return;
+  }
+  
+  msg.style.display = 'none';
+  
+  fetch('/api/admin/eventadmins', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${G.authToken}`
+    },
+    body: JSON.stringify({username: u, password: p})
+  })
+  .then(r => r.json())
+  .then(res => {
+    if(res.error) {
+      msg.textContent = '❌ ' + res.error;
+      msg.style.background = 'rgba(220,38,38,.15)';
+      msg.style.color = 'var(--red)';
+      msg.style.display = 'block';
+      return;
+    }
+    $('newAdminUser').value = '';
+    $('newAdminPass').value = '';
+    $('pwdStrengthFill').style.width = '0%';
+    $('pwdStrengthText').textContent = '';
+    
+    msg.textContent = `✓ Admin "${u}" created successfully`;
+    msg.style.background = 'rgba(22,163,74,.15)';
+    msg.style.color = 'var(--green)';
+    msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 4000);
+    renderAdminsList();
+  })
+  .catch(e => {
+    msg.textContent = '❌ Error: ' + e.message;
+    msg.style.background = 'rgba(220,38,38,.15)';
+    msg.style.color = 'var(--red)';
+    msg.style.display = 'block';
+  });
+}
+
+function deleteEventAdmin(adminId, username){
+  if(!confirm(`Delete admin "${username}"? This action cannot be undone.`)) return;
+  
+  fetch(`/api/admin/eventadmins/${adminId}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${G.authToken}` }
+  })
+    .then(r => r.json())
+    .then(res => {
+      if(res.error) {
+        alert('Error: ' + res.error);
+        return;
+      }
+      alert('Admin deleted successfully');
+      renderAdminsList();
+    })
+    .catch(e => alert('Error deleting admin: ' + e.message));
+}
+
+function renderAssignmentsList(){
+  const html = allEventAdmins.map(admin => {
+    if(!admin.events || admin.events.length === 0) return '';
+    return admin.events.map(eventId => {
+      const prog = G.programmes.find(p => p.id == eventId);
+      if(!prog) return '';
+      return `
+        <div style="padding:.8rem;background:var(--surface3);border-left:3px solid var(--gold);border-radius:2px;display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:500;font-size:.88rem">${admin.username}</div>
+            <div style="font-size:.75rem;color:var(--muted);margin-top:.2rem">→ ${prog.icon} ${prog.name}</div>
+          </div>
+          <button class="btn btn-outline" style="font-size:.7rem;padding:.4rem .6rem;color:var(--muted)" onclick="unassignAdminFromProg('${admin.id}','${eventId}')">Unassign</button>
+        </div>
+      `;
+    }).join('');
+  }).join('');
+  
+  $('assignmentsList').innerHTML = html || '<div style="color:var(--muted);font-size:.85rem;text-align:center;padding:1rem">No assignments yet</div>';
+}
+
+function unassignAdminFromProg(adminId, eventId){
+  if(!confirm('Unassign this admin from the programme?')) return;
+  
+  fetch(`/api/admin/eventadmins/${adminId}/unassign/${eventId}`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${G.authToken}` }
+  })
+    .then(r => r.json())
+    .then(res => {
+      if(res.error) {
+        alert('Error: ' + res.error);
+        return;
+      }
+      renderAdminsList();
+    })
+    .catch(e => alert('Error: ' + e.message));
+}
+
+function assignAdminToProg(){
+  const adminId = $('assignAdminSel').value;
+  const progIdx = $('assignProgSel').value;
+  
+  if(!adminId || !progIdx) {
+    alert('Select an admin and programme');
+    return;
+  }
+  
+  const prog = G.programmes[progIdx];
+  if(!prog){
+    alert('Selected programme is not available');
+    return;
+  }
+  
+  fetch(`/api/admin/eventadmins/${adminId}/assign/${prog.id}`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${G.authToken}` }
+  })
+    .then(r => r.json())
+    .then(res => {
+      if(res.error) {
+        alert('Error: ' + res.error);
+        return;
+      }
+      const msg = $('assignMsg');
+      msg.innerHTML = `<div class="badge badge-green">✓ Admin assigned to ${prog.name}</div>`;
+      setTimeout(() => msg.innerHTML = '', 3000);
+      renderAdminsList();
+    });
+}
+
+function switchAdminProg(){
+  // Find whichever select triggered and sync all others
+  const active = PROG_SELS.map(id=>$(id)).find(el=>el&&document.activeElement===el);
+  if(active) G.adminProg=parseInt(active.value)||0;
+  PROG_SELS.forEach(id=>{const el=$(id);if(el) el.value=G.adminProg;});
+  // update badge
+  const p=ADM();
+  if($('adminProgStatusBadge')){
+    $('adminProgStatusBadge').className='badge '+(p.votingOpen?'badge-green':'badge-red');
+    $('adminProgStatusBadge').textContent=p.votingOpen?'Open':'Closed';
+  }
+}
+
+// ═══════════════ ADMIN VIEWS ═══════════════
+function adminNavKey(ev,pg,el){
+  if(ev.key === 'Enter' || ev.key === ' ') {
+    ev.preventDefault();
+    adminNav(pg,el);
+  }
+}
+
+function adminNav(pg,el){
+  document.querySelectorAll('.sb-lnk').forEach(l=>l.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.adm-page').forEach(p=>p.classList.remove('active'));
+  $('admin'+pg[0].toUpperCase()+pg.slice(1)).classList.add('active');
+  
+  if(pg==='overview') {
+  }
+  if(pg==='programmes') {
+    renderProgMgmt();
+    // Hide create form for event admins
+    const createCard = document.querySelector('#adminProgrammes .card:first-child');
+    if(createCard) createCard.style.display = G.adminRole === 'event' ? 'none' : '';
+  }
+  if(pg==='categories') {
+    renderAdminCats();
+  }
+  if(pg==='transactions') {
+    renderAdminTxns();
+  }
+  if(pg==='fraud') {
+    if(G.adminRole === 'event') {
+      alert('Event admins cannot access fraud control.');
+      return;
+    }
+    renderFraud();
+  }
+  if(pg==='results') {
+    renderResults();
+  }
+  if(pg==='settings') {
+    loadSettings();
+  }
+  if(pg==='admins') {
+    renderAdminsList();
+    const progOptions = G.programmes.length
+      ? G.programmes.map((p,i)=>`<option value="${i}">${p.icon} ${p.name}</option>`).join('')
+      : '<option value="">-- No programmes available --</option>';
+    const assignProgSel = $('assignProgSel');
+    if(assignProgSel){
+      assignProgSel.innerHTML = progOptions;
+      assignProgSel.disabled = G.programmes.length === 0;
+    }
+  }
+}
+
+function refreshAdmin(){
+  // Refresh data from backend then re-render
+  fetch('/api/events')
+    .then(r => r.json())
+    .then(events => {
+      events.forEach(e => {
+        const idx = G.programmes.findIndex(p => p.id === e.id);
+        if(idx !== -1) {
+          G.programmes[idx] = mergeProgramData(G.programmes[idx], mapEvent(e));
+        }
+      });
+      renderStats();
+      renderOvCards();
+      if(document.getElementById('txnBody')) renderAdminTxns();
+    })
+    .catch(() => {
+      renderStats();
+      renderOvCards();
+      if(document.getElementById('txnBody')) renderAdminTxns();
+    });
+}
+
+function renderStats(){
+  const p=ADM();
+  const tv=p.nominees.reduce((a,n)=>a+n.votes,0);
+  const tr=p.transactions.reduce((a,t)=>a+t.amt,0);
+  
+  // For event admins, only show stats from their managed programmes
+  let visibleProgs = G.programmes;
+  if(G.adminRole === 'event' && G.managedEvents.length > 0){
+    visibleProgs = G.programmes.filter(prog => G.managedEvents.includes(prog.id));
+  }
+  
+  const allVotes=visibleProgs.reduce((a,pr)=>a+pr.nominees.reduce((b,n)=>b+n.votes,0),0);
+  const allRev=visibleProgs.reduce((a,pr)=>a+pr.transactions.reduce((b,t)=>b+t.amt,0),0);
+  $('statRow').innerHTML=`
+    <div class="s-card"><div class="s-lbl">Votes (This Prog)</div><div class="s-val">${tv.toLocaleString()}</div><div class="s-sub">${p.categories.length} categories</div></div>
+    <div class="s-card"><div class="s-lbl">Revenue (This Prog)</div><div class="s-val">${fmt(tr)}</div><div class="s-sub">${p.transactions.length} transactions</div></div>
+    <div class="s-card"><div class="s-lbl">All Programmes</div><div class="s-val">${visibleProgs.length}</div><div class="s-sub">${allVotes.toLocaleString()} total votes</div></div>
+    <div class="s-card"><div class="s-lbl">Total Revenue</div><div class="s-val">${fmt(allRev)}</div><div class="s-sub">My programmes</div></div>`;
+}
+
+function renderOvCards(){
+  const p=ADM();
+  const top=[...p.nominees].sort((a,b)=>b.votes-a.votes).slice(0,6);
+  const mx=Math.max(...top.map(n=>n.votes),1);
+  $('ovTop').innerHTML=top.map(n=>`
+    <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.65rem">
+      <div style="flex:1;min-width:0"><div style="font-size:.84rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)">${n.name}</div><div class="pbar" style="margin-top:.28rem"><div class="pbar-fill" style="width:${Math.round(n.votes/mx*100)}%"></div></div></div>
+      <div style="font-size:.78rem;color:var(--gold);min-width:55px;text-align:right">${n.votes.toLocaleString()}</div>
+    </div>`).join('')||'<p style="color:var(--muted);font-size:.84rem">No nominees yet.</p>';
+  $('ovTxn').innerHTML=p.transactions.slice(0,5).map(t=>`
+    <div style="display:flex;justify-content:space-between;padding:.46rem 0;border-bottom:1px solid var(--border);font-size:.78rem">
+      <div><div style="font-weight:500;color:var(--text)">${t.nomName}</div><div style="color:var(--muted);font-size:.7rem">${t.phone}</div></div>
+      <div style="text-align:right"><div style="color:var(--gold)">${fmt(t.amt)}</div><div style="color:var(--muted);font-size:.7rem">${t.qty} votes</div></div>
+    </div>`).join('')||'<div style="color:var(--muted);font-size:.84rem">No transactions yet.</div>';
+}
+
+function previewNomPhoto(){
+  const input = $('newNomPhoto');
+  const preview = $('nomPhotoPreview');
+  if(input.files && input.files[0]){
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function previewProgPhoto(){
+  const input = $('newProgPhoto');
+  const preview = $('progPhotoPreview');
+  if(input.files && input.files[0]){
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+// ═══════════════ PROGRAMMES MANAGEMENT ═══════════════
+function createProg(){
+  if(G.adminRole === 'event') {
+    alert('Only super admins can create programmes. Event admins can only manage their assigned programmes.');
+    return;
+  }
+  
+  const name=($('newProgName').value||'').trim();
+  const desc=($('newProgDesc').value||'').trim();
+  const icon=($('newProgIcon').value||'').trim()||'🏆';
+  const price=parseFloat($('newProgPrice').value)||0.50;
+  const photoFile = $('newProgPhoto').files[0];
+  
+  if(!name){alert('Enter a programme name.');return;}
+  
+  // Create programme first
+  fetch('/api/events', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${G.authToken}`
+    },
+    body: JSON.stringify({ name, desc, icon, votePrice: price })
+  })
+  .then(r => r.json())
+  .then(newEvent => {
+    // Upload photo if provided
+    if(photoFile){
+      const formData = new FormData();
+      formData.append('photo', photoFile);
+      return fetch(`/api/events/${newEvent.id}/photo`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${G.authToken}` },
+        body: formData
+      })
+      .then(r => r.json())
+      .then(photoRes => ({ ...newEvent, photo: photoRes.photo }));
+    }
+    return newEvent;
+  })
+  .then(newEvent => {
+    // Add to programmes list
+    G.programmes.push({
+      id: newEvent.id,
+      name: newEvent.name,
+      desc: newEvent.desc || desc,
+      icon: newEvent.icon || icon,
+      photo: newEvent.photo || '',
+      votingOpen: newEvent.votingOpen || true,
+      votePrice: newEvent.votePrice || price,
+      categories: newEvent.categories || [],
+      nominees: newEvent.nominees || [],
+      transactions: newEvent.transactions || [],
+      blocked: newEvent.blocked || [],
+      nextCatId: 1,
+      nextNomId: 1,
+    });
+    
+    $('newProgName').value='';
+    $('newProgDesc').value='';
+    $('newProgIcon').value='';
+    $('newProgPrice').value='0.50';
+    $('newProgPhoto').value='';
+    $('progPhotoPreview').style.display='none';
+    populateProgSelects();
+    renderProgMgmt();
+    renderHub();
+  })
+  .catch(e => alert('Error creating programme: ' + e.message));
+}
+
+function renderProgMgmt(){
+  const isSuperAdmin = G.adminRole === 'super';
+  
+  // Hide 'All Programmes' section for event admins
+  const allProgList = document.getElementById('allProgrammesList');
+  if(allProgList) allProgList.style.display = isSuperAdmin ? '' : 'none';
+  
+  // Hide 'Create New Programme' form for event admins
+  const createProgCard = document.getElementById('createProgCard');
+  if(createProgCard) createProgCard.style.display = isSuperAdmin ? '' : 'none';
+  
+  // For event admins, only show their managed programmes
+  let visibleProgs = G.programmes;
+  if(G.adminRole === 'event'){
+    visibleProgs = G.programmes.filter(p => G.managedEvents.includes(p.id));
+  }
+  
+  // Map programmes to indices for onclick handlers
+  const progMap = {};
+  visibleProgs.forEach((p, idx) => {
+    const globalIdx = G.programmes.indexOf(p);
+    progMap[p.id] = globalIdx;
+  });
+  
+  $('progMgmtList').innerHTML=visibleProgs.map((p,i)=>{
+    const globalIdx = progMap[p.id];
+    return `
+    <div class="prog-mgmt-card">
+      <div class="prog-mgmt-icon">${p.icon}</div>
+      <div class="prog-mgmt-info">
+        <div class="prog-mgmt-name">${p.name}</div>
+        <div class="prog-mgmt-meta">${p.desc||''} · ${p.categories.length} cats · ${p.nominees.reduce((a,n)=>a+n.votes,0).toLocaleString()} votes · <span style="color:${p.votingOpen?'var(--green)':'var(--red)'}">${p.votingOpen?'Open':'Closed'}</span></div>
+      </div>
+      <div class="prog-mgmt-actions">
+        <button class="btn btn-outline" style="padding:.28rem .65rem;font-size:.68rem" onclick="toggleProgVoting(${globalIdx})">${p.votingOpen?'Close':'Open'}</button>
+        ${isSuperAdmin ? `<button class="btn btn-red" style="padding:.28rem .55rem;font-size:.68rem" onclick="deleteProg(${globalIdx})">×</button>` : ''}
+      </div>
+    </div>`;
+  }).join('')||'<p style="color:var(--muted);font-size:.84rem">No programmes yet.</p>';
+}
+
+function toggleProgVoting(i){
+  const prog = G.programmes[i];
+  
+  fetch(`/api/events/${prog.id}/toggle`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${G.authToken}` }
+  })
+    .then(r => r.json())
+    .then(res => {
+      prog.votingOpen = res.votingOpen;
+      renderProgMgmt();
+      if(G.adminProg===i) switchAdminProg();
+      renderHub();
+    })
+    .catch(e => alert('Error toggling voting: ' + e.message));
+}
+
+function deleteProg(i){
+  if(!confirm('Delete this programme and ALL its data?')) return;
+  const prog = G.programmes[i];
+  
+  fetch(`/api/events/${prog.id}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${G.authToken}` }
+  })
+    .then(r => r.json())
+    .then(() => {
+      G.programmes.splice(i,1);
+      G.adminProg=Math.min(G.adminProg,Math.max(0,G.programmes.length-1));
+      G.activeProg=Math.min(G.activeProg,Math.max(0,G.programmes.length-1));
+      populateProgSelects();
+      renderProgMgmt();
+      renderHub();
+      refreshAdmin();
+    })
+    .catch(e => alert('Error deleting programme: ' + e.message));
+}
+
+// ═══════════════ CATEGORIES & NOMINEES ═══════════════
+function renderAdminCats(){
+  const p=ADM();
+  $('catMgmtList').innerHTML=p.categories.map(c=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:.52rem 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:.88rem;color:var(--text)">${c.icon} ${c.name}</span>
+      <button class="btn btn-red" style="padding:.25rem .6rem;font-size:.68rem" onclick="delCat(${c.id})">Remove</button>
+    </div>`).join('')||'<p style="color:var(--muted);font-size:.82rem">No categories yet.</p>';
+  $('newNomCat').innerHTML=p.categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  $('nomMgmtList').innerHTML=p.nominees.map(n=>{
+    const c=getC(n.catId,p);
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:.48rem 0;border-bottom:1px solid var(--border)">
+      <div><div style="font-size:.84rem;font-weight:500;color:var(--text)">${n.name}</div><div style="font-size:.7rem;color:var(--muted)">${c?c.name:''} · ${n.votes.toLocaleString()} votes</div></div>
+      <button class="btn btn-red" style="padding:.25rem .6rem;font-size:.68rem" onclick="delNom(${n.id})">×</button>
+    </div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">No nominees yet.</p>';
+}
+
+function addCat(){
+  const p=ADM();
+  const name=($('newCatName').value||'').trim();
+  const icon=($('newCatIcon').value||'').trim()||'🏅';
+  if(!name){alert('Enter category name.');return;}
+  
+  fetch(`/api/events/${p.id}/categories`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${G.authToken}`
+    },
+    body: JSON.stringify({name, icon})
+  })
+  .then(r => r.json())
+  .then(() => {
+    p.categories.push({id: Date.now(), name, icon});
+    $('newCatName').value='';
+    renderAdminCats();
+    renderHub();
+    loadProgrammesFromBackend(); // Refresh programmes from server
+  })
+  .catch(e => alert('Error adding category: ' + e.message));
+}
+
+function delCat(id){
+  if(!confirm('Delete this category and all nominees?')) return;
+  const p=ADM();
+  
+  fetch(`/api/events/${p.id}/categories/${id}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${G.authToken}` }
+  })
+    .then(r => r.json())
+    .then(() => {
+      p.categories=p.categories.filter(c=>c.id!==id);
+      p.nominees=p.nominees.filter(n=>n.catId!==id);
+      renderAdminCats();
+      renderHub();
+      loadProgrammesFromBackend(); // Refresh programmes from server
+    })
+    .catch(e => alert('Error deleting category: ' + e.message));
+}
+
+function addNom(){
+  const p=ADM();
+  const catId=parseInt($('newNomCat').value);
+  const name=($('newNomName').value||'').trim();
+  const photoFile = $('newNomPhoto').files[0];
+  
+  if(!name){alert('Enter nominee name.');return;}
+  
+  // Create nominee first (without photo)
+  fetch(`/api/events/${p.id}/nominees`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${G.authToken}`
+    },
+    body: JSON.stringify({name, catId, photo: ''})
+  })
+  .then(r => r.json())
+  .then(res => {
+    const nomId = res.nomineeId || Date.now();
+    
+    // Upload photo if provided
+    if(photoFile){
+      const formData = new FormData();
+      formData.append('photo', photoFile);
+      return fetch(`/api/events/${p.id}/nominee/${nomId}/photo`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${G.authToken}` },
+        body: formData
+      })
+      .then(r => r.json())
+      .then(photoRes => ({ nomId, photo: photoRes.photo }));
+    }
+    return { nomId, photo: '' };
+  })
+  .then(result => {
+    p.nominees.push({id: result.nomId, catId, name, photo: result.photo || '', votes:0});
+    $('newNomName').value='';
+    $('newNomPhoto').value='';
+    $('nomPhotoPreview').style.display='none';
+    renderAdminCats();
+    loadProgrammesFromBackend(); // Refresh programmes from server
+  })
+  .catch(e => alert('Error adding nominee: ' + e.message));
+}
+
+function delNom(id){
+  if(!confirm('Remove this nominee?')) return;
+  const p=ADM();
+  
+  fetch(`/api/events/${p.id}/nominees/${id}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${G.authToken}` }
+  })
+    .then(r => r.json())
+    .then(() => {
+      p.nominees=p.nominees.filter(n=>n.id!==id);
+      renderAdminCats();
+      loadProgrammesFromBackend(); // Refresh programmes from server
+    })
+    .catch(e => alert('Error deleting nominee: ' + e.message));
+}
+
+// ═══════════════ TRANSACTIONS ═══════════════
+function renderAdminTxns(){
+  const p=ADM();
+  const tb=$('txnBody'),em=$('txnEmpty');
+  if(!p.transactions.length){tb.innerHTML='';em.style.display='block';return;}
+  em.style.display='none';
+  tb.innerHTML=p.transactions.map(t=>`<tr>
+    <td style="color:var(--muted);font-size:.74rem">${t.time ? new Date(t.time).toLocaleString('en-GH',{dateStyle:'short',timeStyle:'short'}) : '—'}</td>
+    <td style="font-size:.74rem;font-family:monospace">${t.id}</td>
+    <td>${t.phone}</td>
+    <td>${t.nomName}<br><span style="font-size:.68rem;color:var(--muted)">${t.catName}</span></td>
+    <td>${t.qty}</td>
+    <td style="color:var(--gold);font-weight:500">${fmt(t.amt)}</td>
+    <td><span class="badge ${t.method==='mtn'?'badge-gold':'badge-blue'}">${t.method==='mtn'?'MTN':'Telecel'}</span></td>
+    <td><span class="badge badge-green">Success</span></td>
+  </tr>`).join('');
+}
+
+// ═══════════════ FRAUD ═══════════════
+function renderFraud(){
+  const p=ADM();
+  $('blockedList').innerHTML=p.blocked.length
+    ?p.blocked.map(b=>`<div class="blk-chip">${b} <span style="cursor:pointer;font-weight:700;margin-left:.28rem" onclick="unblk('${b}')">×</span></div>`).join('')
+    :'<div style="color:var(--muted);font-size:.82rem">No blocked numbers.</div>';
+  $('adjNom').innerHTML=p.nominees.map(n=>`<option value="${n.id}">${n.name} (${n.votes})</option>`).join('');
+}
+
+function blockNum(){
+  const ph=($('blockPhone').value||'').trim().replace(/\s/g,'');
+  if(!ph){alert('Enter phone number.');return;}
+  const p=ADM();
+  if(p.blocked.includes(ph)){alert('Already blocked.');return;}
+  fetch(`/api/events/${p.id}/block`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${G.authToken}` },
+    body: JSON.stringify({ phone: ph })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if(res.error){ alert('Error: ' + res.error); return; }
+    p.blocked = res.blocked;
+    $('blockPhone').value='';
+    $('blockReason').value='';
+    renderFraud();
+  })
+  .catch(e => alert('Error blocking number: ' + e.message));
+}
+
+function unblk(ph){
+  const p=ADM();
+  fetch(`/api/events/${p.id}/unblock`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${G.authToken}` },
+    body: JSON.stringify({ phone: ph })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if(res.error){ alert('Error: ' + res.error); return; }
+    p.blocked = res.blocked;
+    renderFraud();
+  })
+  .catch(e => alert('Error unblocking: ' + e.message));
+}
+
+function applyAdj(){
+  if(G.adminRole === 'event') {
+    alert('Event admins cannot manually adjust votes.');
+    return;
+  }
+  const p=ADM();
+  const id=parseInt($('adjNom').value);
+  const d=parseInt($('adjAmt').value);
+  if(isNaN(d) || d === 0){alert('Enter a non-zero number.');return;}
+  const n=p.nominees.find(n=>n.id===id);
+  if(!n){alert('Nominee not found.');return;}
+  
+  fetch(`/api/events/${p.id}/nominees/${id}/adjust`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${G.authToken}` },
+    body: JSON.stringify({ adjustment: d })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if(res.error){ alert('Error: ' + res.error); return; }
+    n.votes = res.newTotal;
+    $('adjAmt').value='';
+    $('adjReason').value='';
+    alert(`${n.name} adjusted by ${d>0?'+':''}${d}. New total: ${res.newTotal}`);
+    renderFraud(); refreshAdmin();
+  })
+  .catch(e => alert('Error applying adjustment: ' + e.message));
+}
+
+// ═══════════════ RESULTS ═══════════════
+function renderResults(){
+  const p=ADM();
+  $('resultsWrap').innerHTML=p.categories.map(c=>{
+    const noms=p.nominees.filter(n=>n.catId===c.id).sort((a,b)=>b.votes-a.votes);
+    const w=noms[0];
+    const mx=Math.max(...noms.map(n=>n.votes),1);
+    return `<div class="card" style="margin-bottom:1.2rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem">
+        <div style="font-family:'Playfair Display',serif;font-size:1.12rem;font-weight:700;color:var(--text)">${c.icon} ${c.name}</div>
+        ${w?`<span class="badge badge-gold">Winner: ${w.name}</span>`:''}
+      </div>
+      ${noms.map((n,i)=>`
+        <div style="display:flex;align-items:center;gap:.88rem;margin-bottom:.52rem">
+          <div style="font-size:.76rem;color:var(--muted);width:1.1rem">${i+1}</div>
+          <div style="flex:1"><div style="font-size:.86rem;font-weight:${i===0?'500':'400'};color:${i===0?'var(--gold)':'var(--text)'}">${n.name}</div><div class="pbar" style="margin-top:.26rem"><div class="pbar-fill" style="width:${Math.round(n.votes/mx*100)}%"></div></div></div>
+          <div style="font-size:.8rem;color:var(--gold);min-width:66px;text-align:right">${n.votes.toLocaleString()}</div>
+        </div>`).join('')}
+    </div>`;
+  }).join('')||'<p style="color:var(--muted);font-size:.86rem">No categories in this programme.</p>';
+}
+
+function exportCSV(){
+  const p=ADM();
+  const rows=[['Programme','Category','Nominee','Votes','Revenue (GHC)']];
+  p.categories.forEach(c=>{
+    p.nominees.filter(n=>n.catId===c.id).sort((a,b)=>b.votes-a.votes)
+      .forEach(n=>rows.push([`"${p.name}"`,`"${c.name}"`,`"${n.name}"`,n.votes,(n.votes*p.votePrice).toFixed(2)]));
+  });
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(rows.map(r=>r.join(',')).join('\n'));
+  a.download=`${p.name.replace(/\s+/g,'_')}_results.csv`;a.click();
+}
+
+// ═══════════════ SETTINGS ═══════════════
+function toggleVoting(){
+  const p=ADM();
+  fetch(`/api/events/${p.id}/toggle`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${G.authToken}` }
+  })
+  .then(r => r.json())
+  .then(res => {
+    p.votingOpen = res.votingOpen;
+    $('votingToggle').classList.toggle('on', p.votingOpen);
+    $('adminProgStatusBadge').className='badge '+(p.votingOpen?'badge-green':'badge-red');
+    $('adminProgStatusBadge').textContent=p.votingOpen?'Open':'Closed';
+    renderHub(); refreshAdmin();
+  })
+  .catch(e => alert('Error toggling voting: ' + e.message));
+}
+
+function toggleShowResults(){
+  const p=ADM();
+  p.showResults=!p.showResults;
+  $('showResultsToggle').classList.toggle('on',p.showResults);
+  
+  // Persist to backend
+  fetch(`/api/events/${p.id}/toggle-results`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${G.authToken}` }
+  })
+    .then(r => r.json())
+    .then(res => {
+      p.showResults = res.showResults;
+      renderHub();
+      refreshAdmin();
+    })
+    .catch(e => console.error('Error toggling results visibility:', e));
+}
+
+function loadSettings(){
+  const p=ADM();
+  const isEventAdmin = G.adminRole === 'event';
+  
+  $('votePrice').value=p.votePrice.toFixed(2);
+  $('eventNameInput').value=p.name;
+  $('eventTagInput').value=p.desc||'';
+  // Load latest Paystack config from server each time settings are opened
+  fetch('/api/paystack-config').then(r=>r.json()).then(cfg=>{
+    G.psKey = cfg.publicKey || '';
+    G.psEmail = cfg.email || '';
+    if($('psKey')) $('psKey').value = G.psKey;
+    if($('psEmail')) $('psEmail').value = G.psEmail;
+  }).catch(()=>{
+    if($('psKey')) $('psKey').value = G.psKey||'';
+    if($('psEmail')) $('psEmail').value = G.psEmail||'';
+  });
+  $('votingToggle').classList.toggle('on',p.votingOpen);
+  $('showResultsToggle').classList.toggle('on',p.showResults!==false);
+  
+  // Disable certain fields for event admins
+  if(isEventAdmin){
+    $('votePrice').disabled = true;
+    $('eventNameInput').disabled = true;
+    $('eventTagInput').disabled = true;
+    $('psKey').disabled = true;
+    $('psEmail').disabled = true;
+    $('chkMTN').disabled = true;
+    $('chkTel').disabled = true;
+    $('newAdminPass').disabled = true;
+    
+    // Hide super-admin-only settings (Paystack Configuration and Change Admin Password)
+    const gridContainer = document.querySelector('.admin-info-grid');
+    if(gridContainer) {
+      const cards = gridContainer.querySelectorAll('.card');
+      if(cards.length >= 2) cards[1].style.display = 'none'; // Paystack Configuration
+      if(cards.length >= 3) cards[2].style.display = 'none'; // Change Admin Password
+    }
+  }
+}
+
+function saveSettings(){
+  if(G.adminRole === 'event') {
+    alert('Event admins can only toggle voting. Use the toggle button to open/close voting.');
+    return;
+  }
+  
+  const p=ADM();
+  const pr=parseFloat($('votePrice').value);
+  const nm=($('eventNameInput').value||'').trim();
+  const desc=($('eventTagInput').value||'').trim();
+  
+  if(!nm) {alert('Enter programme name.'); return;}
+  
+  const updateData = {
+    name: nm,
+    desc: desc,
+    votePrice: isNaN(pr) || pr <= 0 ? p.votePrice : pr
+  };
+  
+  fetch(`/api/events/${p.id}`, {
+    method: 'PUT',
+    headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${G.authToken}`},
+    body: JSON.stringify(updateData)
+  })
+  .then(r => r.json())
+  .then(() => {
+    p.votePrice = updateData.votePrice;
+    p.name = nm;
+    p.desc = desc;
+    populateProgSelects();
+    renderHub();
+    refreshAdmin();
+    alert('Settings saved!');
+  })
+  .catch(e => alert('Error saving settings: ' + e.message));
+}
+
+function savePSConfig(){
+  const k=($('psKey').value||'').trim();
+  const e=($('psEmail').value||'').trim();
+  
+  if(!k || !e) {
+    alert('Please enter both public key and organization email.');
+    return;
+  }
+  
+  // Update global state
+  G.psKey=k;
+  G.psEmail=e;
+  
+  // Save to backend
+  fetch('/api/paystack-config', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${G.authToken}`
+    },
+    body: JSON.stringify({
+      publicKey: k,
+      email: e
+    })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if(res.success) {
+      alert('✓ Paystack config saved! '+(k.startsWith('pk_live_')?'LIVE mode active.':'Test mode active.'));
+    } else {
+      alert('Error: ' + (res.error || 'Failed to save'));
+    }
+  })
+  .catch(err => alert('Error saving config: ' + err.message));
+}
+
+function testPS(){
+  if(!G.psKey){alert('Enter your Paystack public key first.');return;}
+  try{
+    const h=PaystackPop.setup({
+      key:G.psKey,email:G.psEmail||'test@test.com',amount:100,currency:'GHS',
+      ref:genRef()+'-TEST',channels:['mobile_money'],
+      onSuccess(r){alert('Test payment successful!\nRef: '+r.reference);},
+      onCancel(){alert('Test cancelled.');}
+    });h.openIframe();
+  }catch(e){alert('Paystack error: '+e.message);}
+}
+
+function changePass(){
+  const np=($('settingsAdminPass').value||'').trim();
+  if(!np || np.length < 8){alert('Password must be at least 8 characters.');return;}
+  fetch('/api/change-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${G.authToken}` },
+    body: JSON.stringify({ password: np })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if(res.error){ alert('Error: ' + res.error); return; }
+    $('settingsAdminPass').value='';
+    alert('Password updated successfully. You will need to use the new password on next login.');
+  })
+  .catch(e => alert('Error updating password: ' + e.message));
+}
+
+// ═══════════════ INIT ═══════════════
+// Restore admin session from server token, then load programmes
+(async () => {
+  await restoreAdminSession();
+  await loadProgrammesFromBackend();
+  await loadPaystackConfig();
+  
+  // If session was restored, open admin panel
+  if(G.loggedIn && !$('adminApp').classList.contains('active-on-load')){
+    // Don't auto-open admin - user can click the button
+  }
+  
+  // Poll for live vote updates every 30 seconds when on voter pages
+  setInterval(async () => {
+    const inAdmin = !$('adminApp').classList.contains('hidden');
+    if(inAdmin) return; // Admin already manages its own refresh
+    try {
+      const response = await fetch('/api/events');
+      if(!response.ok) return;
+      const events = await response.json();
+      let changed = false;
+      events.forEach(e => {
+        const idx = G.programmes.findIndex(p => p.id === e.id);
+        if(idx === -1) { G.programmes.push(mapEvent(e)); changed = true; return; }
+        const p = G.programmes[idx];
+        // Update votes silently
+        e.nominees.forEach(n => {
+          const local = p.nominees.find(ln => ln.id === n.id);
+          if(local && local.votes !== n.votes){ local.votes = n.votes; changed = true; }
+        });
+        if(p.votingOpen !== e.votingOpen){ p.votingOpen = e.votingOpen; changed = true; }
+        if(p.showResults !== e.showResults){ p.showResults = e.showResults; changed = true; }
+      });
+      if(changed){
+        const visPage = ['hubPage','landingPage','leaderPage'].find(pg => !$(pg)?.classList.contains('hidden'));
+        if(visPage === 'hubPage') renderHub();
+        if(visPage === 'leaderPage') renderLeaderboard();
+      }
+    } catch(e) { /* silent fail */ }
+  }, 30000);
+})();
+
+// ═══════════════ PAGE NAVIGATION ═══════════════
+function navigateTo(page) {
+  const pages = ['homePage', 'aboutPage', 'nominationsPage', 'contactPage', 'voterApp', 'adminApp'];
+  pages.forEach(p => {
+    const el = $(p);
+    if(el) el.style.display = 'none';
+  });
+  
+  const navLinks = document.querySelectorAll('.nav-link');
+  navLinks.forEach(link => link.classList.remove('active'));
+  
+  if(page === 'home'){
+    $('homePage').style.display = 'block';
+    document.querySelector('[onclick="navigateTo(\'home\')"].nav-link')?.classList.add('active');
+    renderEventsGrid();
+  } else if(page === 'about'){
+    $('aboutPage').style.display = 'block';
+    document.querySelector('[onclick="navigateTo(\'about\')"].nav-link')?.classList.add('active');
+  } else if(page === 'nominations'){
+    $('nominationsPage').style.display = 'block';
+    document.querySelector('[onclick="navigateTo(\'nominations\')"].nav-link')?.classList.add('active');
+  } else if(page === 'contact'){
+    $('contactPage').style.display = 'block';
+    document.querySelector('[onclick="navigateTo(\'contact\')"].nav-link')?.classList.add('active');
+  }
+  
+  window.scrollTo(0, 0);
+}
+
+function searchEvents() {
+  const query = $('searchInput')?.value.toLowerCase() || '';
+  renderEventsGrid(query);
+}
+
+function renderEventsGrid(searchQuery = '') {
+  const grid = $('eventsGrid');
+  const noEvents = $('noEvents');
+  if(!grid) return;
+  
+  let events = G.programmes || [];
+  if(searchQuery) {
+    events = events.filter(e => 
+      e.name.toLowerCase().includes(searchQuery) || 
+      (e.code && e.code.toLowerCase().includes(searchQuery))
+    );
+  }
+  
+  if(events.length === 0) {
+    grid.innerHTML = '';
+    noEvents.style.display = 'block';
+    return;
+  }
+  
+  noEvents.style.display = 'none';
+  grid.innerHTML = events.map((event, idx) => `
+    <div class="event-card" onclick="openProg(${idx})">
+      <div class="event-code">${event.code || 'CODE-' + (idx+1)}</div>
+      <div class="event-title">${event.name}</div>
+      <div class="event-desc">${event.description || 'Vote for your favorites'}</div>
+      <div class="event-meta">
+        <span>${event.categories?.length || 0} categories</span>
+        <span>${event.nominees?.length || 0} nominees</span>
+      </div>
+    </div>
+  `).join('');
+}
+</script>
+
+<!-- FOOTER -->
+<footer style="text-align:center;padding:1.5rem">
+  <div style="font-size:.8rem;color:var(--muted)">© 2026 LESVOTE. All rights reserved.</div>
+</footer>
+</body>
+</html>
